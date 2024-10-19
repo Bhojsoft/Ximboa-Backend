@@ -255,7 +255,7 @@ const { getRoleOrInstitute } = require("../../../../utils/helper");
 // });
 
 const NodeCache = require("node-cache");
-const cache = new NodeCache({ stdTTL: 300, checkperiod: 320 }); // TTL set to 5 minutes
+const cache = new NodeCache({ stdTTL: 300, checkperiod: 320 });
 
 router.get("/home", async (req, res) => {
   try {
@@ -264,7 +264,6 @@ router.get("/home", async (req, res) => {
     const startIndex = (page - 1) * limit;
     const cacheKey = `homeData_page_${page}_limit_${limit}`;
 
-    // Check if data exists in cache
     const cachedData = cache.get(cacheKey);
     if (cachedData) {
       return res.status(200).send(cachedData);
@@ -288,7 +287,9 @@ router.get("/home", async (req, res) => {
         Category.find().sort({ createdAt: -1 }).skip(startIndex).limit(9),
 
         Trainer.aggregate([
-          { $match: { role: { $in: ["TRAINER", "SELF_EXPERT"] } } },
+          {
+            $match: { role: { $in: ["TRAINER", "SELF_EXPERT", "INSTITUTE"] } },
+          },
           {
             $lookup: {
               from: "courses",
@@ -335,7 +336,6 @@ router.get("/home", async (req, res) => {
       ]
     );
 
-    // Process Courses
     const coursesWithFullImageUrl = courses.map((course) => {
       const reviews = course.reviews || [];
       const totalStars = reviews.reduce(
@@ -384,7 +384,6 @@ router.get("/home", async (req, res) => {
         : "",
     }));
 
-    // Process Trainers
     const trainersWithFullImageUrl = await Promise.all(
       trainers.map(async (trainer) => {
         const institute = await InstituteModel.findOne({
@@ -403,6 +402,7 @@ router.get("/home", async (req, res) => {
           f_Name: trainer.f_Name,
           l_Name: trainer.l_Name,
           role: trainer.role,
+          flag: getRoleOrInstitute(trainer.role),
           course_count: trainer.course_count,
           ratings: stcount[0]?.averageRating || "0",
           trainer_image: trainer.trainer_image
@@ -412,7 +412,6 @@ router.get("/home", async (req, res) => {
       })
     );
 
-    // Process Products
     const productDetails = products.map((product) => ({
       _id: product._id,
       productImage: product.product_image
@@ -426,7 +425,6 @@ router.get("/home", async (req, res) => {
       productFlag: product.product_flag || "",
     }));
 
-    // Process Events
     const eventDetails = events.map((event) => ({
       _id: event._id,
       eventImage: event.event_thumbnail
@@ -440,7 +438,6 @@ router.get("/home", async (req, res) => {
       enrollments: event.registered_users?.length || "",
     }));
 
-    // The final response data
     const responseData = {
       trainersWithFullImageUrl,
       categoriesWithFullImageUrl,
@@ -449,10 +446,8 @@ router.get("/home", async (req, res) => {
       eventDetails,
     };
 
-    // Store the data in cache
     cache.set(cacheKey, responseData);
 
-    // Send the response
     res.status(200).send(responseData);
   } catch (err) {
     console.log(err);
@@ -503,10 +498,8 @@ router.get("/allcourses", async (req, res) => {
       .populate("category_id", "category_name")
       .populate("trainer_id", "f_Name l_Name trainer_image id city role");
 
-    // Get base URL for image paths
     const baseUrl = req.protocol + "://" + req.get("host");
 
-    // Map courses to include full image URLs
     const coursesWithFullImageUrl = courses.map((course) => {
       const reviews = course.reviews;
       const totalStars = reviews.reduce(
@@ -577,12 +570,11 @@ router.get("/trainers", async (req, res) => {
   const limitNum = parseInt(limit);
 
   try {
-    // Parallelize trainer fetching with total count
     const [trainers, totalTrainers] = await Promise.all([
       Trainer.aggregate([
         {
           $match: {
-            role: { $in: ["TRAINER", "SELF_EXPERT"] },
+            role: { $in: ["TRAINER", "SELF_EXPERT", "INSTITUTE"] },
           },
         },
         {
@@ -651,6 +643,7 @@ router.get("/trainers", async (req, res) => {
           f_Name: trainer.f_Name,
           l_Name: trainer.l_Name,
           role: trainer.role,
+          flag: getRoleOrInstitute(trainer.role),
           course_count: trainer.course_count,
           categories: trainer?.categories?.map(
             (category) => category.category_name

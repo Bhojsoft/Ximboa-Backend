@@ -625,13 +625,11 @@ const approveRoleChange = asyncHandler(async (req, res) => {
         );
     }
 
-    // Find the user by their user ID
     const user = await Registration.findById(userid);
     if (!user) {
       return res.status(404).json(new ApiError(404, "User not found."));
     }
 
-    // Check if the user has a pending role change request
     if (!user.requested_Role) {
       return res
         .status(400)
@@ -642,8 +640,8 @@ const approveRoleChange = asyncHandler(async (req, res) => {
 
     if (approved) {
       await Registration.findByIdAndUpdate(userid, {
-        role: user.requested_Role, // Set the role to the requested role
-        requested_Role: "", // Clear the requested_Role after approval
+        role: user.requested_Role,
+        requested_Role: "",
       });
 
       await Registration.updateOne(
@@ -653,9 +651,9 @@ const approveRoleChange = asyncHandler(async (req, res) => {
 
       const approvedRole = user.requested_Role;
       sendEmail(
-        "roleChangeApproved", // Template for role change approval email
-        { name: user.f_Name, email: user.email_id }, // User's name and email
-        [approvedRole] // Data to be used in the email template
+        "roleChangeApproved",
+        { name: user.f_Name, email: user.email_id },
+        [approvedRole]
       );
 
       const notificationForApproval = new NotificationModel({
@@ -720,8 +718,8 @@ const getAllRequestsByAdminId = async (req, res) => {
     const admin = await Registration.findById(adminId, "requests")
       .sort({ createdAt: -1 })
       .populate({
-        path: "requests.userid", // Populating the categories field
-        select: "f_Name l_Name", // Selecting only the category_name from the populated categories
+        path: "requests.userid",
+        select: "f_Name l_Name",
       });
     if (!admin) {
       (err) => {
