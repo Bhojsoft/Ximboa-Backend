@@ -18,34 +18,28 @@ const unifiedSearch = async (req, res) => {
 
     let query = {};
 
-    // Category filter (common across all types)
     if (category_id) {
       query.category_id = category_id;
     }
 
-    // Name filter (applies to all types)
     if (name) {
       query.name = { $regex: name, $options: "i" };
     }
 
-    // Price filter (only for Course and Product)
     if ((min_price || max_price) && (type === "course" || type === "product")) {
       query.price = {};
       if (min_price) query.price.$gte = parseFloat(min_price);
       if (max_price) query.price.$lte = parseFloat(max_price);
     }
 
-    // Level filter (only for Course)
     if (level && type === "course") {
       query.level = level;
     }
 
-    // Date filter (only for Events)
     if (date && type === "event") {
       query.date = { $gte: new Date(date) };
     }
 
-    // Availability filter (only for Product)
     if (availability && type === "product") {
       query.availability = availability === "true";
     }

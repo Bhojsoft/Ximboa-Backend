@@ -3,7 +3,7 @@ const { ApiError } = require("../../utils/ApiError");
 const { default: mongoose } = require("mongoose");
 
 // Get courses filtered by multiple categories
-const getCoursesByCategory = async (req, res) => {
+const getCoursesByFilter = async (req, res) => {
   try {
     const { categories } = req.query;
     const page = parseInt(req.query.page) || 1;
@@ -16,7 +16,7 @@ const getCoursesByCategory = async (req, res) => {
       });
     }
 
-    const categoryArray = Array.isArray(categories) ? categories : [categories];
+    const categoryArray = categories.split(",");
 
     const courses = await Course.find({ category_id: { $in: categoryArray } })
       .sort({ createdAt: -1 })
@@ -49,15 +49,16 @@ const getCoursesByCategory = async (req, res) => {
       trainer_image: course?.trainer_id?.trainer_image
         ? `${baseUrl}/${course?.trainer_id?.trainer_image?.replace(/\\/g, "/")}`
         : "",
-      course_duration: Math.floor(
-        Math.round(
-          ((course?.end_date - course?.start_date) /
-            (1000 * 60 * 60 * 24 * 7)) *
-            100
-        ) / 100
-      ),
+      course_duration:
+        Math.floor(
+          Math.round(
+            ((course?.end_date - course?.start_date) /
+              (1000 * 60 * 60 * 24 * 7)) *
+              100
+          ) / 100
+        ) || 1,
       course_price: course?.price || "",
-      course_offer_price: course?.offer_price || "",
+      course_offer_price: course?.offer_prize || "",
     }));
 
     res.status(200).json({
@@ -77,5 +78,5 @@ const getCoursesByCategory = async (req, res) => {
 };
 
 module.exports = {
-  getCoursesByCategory,
+  getCoursesByFilter,
 };

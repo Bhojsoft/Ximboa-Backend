@@ -3,9 +3,6 @@ const router = express.Router();
 const Trainer = require("../../../model/registration");
 const Course = require("../../../model/course");
 const Review = require("../../../model/Review");
-const Question = require("../../../model/Student/Question");
-const Appointment = require("../../../model/Appointment/Appointment");
-const Enquiry = require("../../../model/Enquire");
 const Product = require("../../../model/product");
 const Event = require("../../../model/event");
 const about = require("../../../model/about");
@@ -17,9 +14,6 @@ const { ApiError } = require("../../../utils/ApiError");
 const InstituteModel = require("../../../model/Institute/Institute.model");
 const { default: mongoose } = require("mongoose");
 
-// Get data according to the trainer Email id
-
-// Get all data according to the trainer
 router.get("/:id", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -36,68 +30,8 @@ router.get("/:id", async (req, res) => {
 
     const institutes = await InstituteModel.findOne({ trainers: trainerId });
 
-    const courses = await Course.find({ trainer_id: trainerId })
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .populate("category_id", "category_name")
-      .populate("trainer_id", "f_Name l_Name trainer_image business_Name role");
-
     const baseUrl = req.protocol + "://" + req.get("host");
 
-    const coursesWithFullImageUrl = courses.map((course) => {
-      const reviews = course.reviews;
-      const totalStars = reviews.reduce(
-        (sum, review) => sum + review.star_count,
-        0
-      );
-      const averageRating = totalStars / reviews.length;
-      return {
-        _id: course?._id,
-        course_name: course?.course_name || "",
-        category_name: course?.category_id?.category_name || "",
-        online_offline: course?.online_offline || "",
-        thumbnail_image: course?.thumbnail_image
-          ? `${baseUrl}/${course?.thumbnail_image?.replace(/\\/g, "/")}`
-          : "",
-        business_Name: course?.trainer_id?.business_Name
-          ? course?.trainer_id?.business_Name
-          : `${course?.trainer_id?.f_Name || ""} ${
-              course?.trainer_id?.l_Name || ""
-            }`.trim() || "",
-        trainer_image: course?.trainer_id?.trainer_image
-          ? `${baseUrl}/${course?.trainer_id?.trainer_image?.replace(
-              /\\/g,
-              "/"
-            )}`
-          : "",
-        course_rating: averageRating || "",
-        course_duration: Math.floor(
-          Math.round(
-            ((course?.end_date - course?.start_date) /
-              (1000 * 60 * 60 * 24 * 7)) *
-              100
-          ) / 100
-        ),
-        course_price: course?.price || "",
-        course_offer_prize: course?.offer_prize || "",
-        course_flag: course?.trainer_id?.role || "",
-      };
-    });
-
-    // Find question by the trainer
-    const question = await Question.find({ t_id: trainerId }).sort({
-      createdAt: -1,
-    });
-    // Find Appointment by the trainer
-    const Appointments = await Appointment.find({ t_id: trainerId }).sort({
-      createdAt: -1,
-    });
-    // Find Enquiry by the trainer
-    const Enquirys = await Enquiry.find({ t_id: trainerId }).sort({
-      createdAt: -1,
-    });
-    // Find Products by the trainer
     const Products = await Product.find({ t_id: trainerId })
       .sort({ createdAt: -1 })
       .populate("categoryid", "category_name")
@@ -127,28 +61,6 @@ router.get("/:id", async (req, res) => {
         identityFlag:
           product?.t_id?.role === "TRAINER" ? "Institute" : "Self Expert",
         product_flag: product?.product_flag || "",
-      };
-    });
-
-    // Find Events by the trainer
-    const events = await Event.find({ trainerid: trainerId })
-      .sort({ createdAt: -1 })
-      .populate("event_category", "category_name -_id")
-      .populate("trainerid", "f_Name l_Name");
-    // .populate("trainerid", "f_Name l_Name");
-
-    const eventsWithThumbnailUrl = events.map((event) => {
-      return {
-        _id: event?._id,
-        event_name: event?.event_name || "",
-        event_date: event?.event_date || "",
-        event_category: event?.event_category?.category_name || "",
-        event_type: event?.event_type || "",
-        trainer_id: event?.trainerid?._id || "",
-        registered_users: event?.registered_users.length || "",
-        event_thumbnail: event?.event_thumbnail
-          ? `${baseUrl}/${event?.event_thumbnail?.replace(/\\/g, "/")}`
-          : "",
       };
     });
 
@@ -210,7 +122,6 @@ router.get("/:id", async (req, res) => {
       };
     });
 
-    // Find About by the trainer
     const About = await about.find({ trainer: trainerId });
 
     const reviewsData = institutes
@@ -284,7 +195,6 @@ router.get("/:id", async (req, res) => {
       .populate("category_id", "category_name")
       .populate("trainer_id", "f_Name l_Name trainer_image business_Name role");
 
-    // Map courses to include full image URLs and trainer name
     const OnGoingBatches = ongoingCourses.map((course) => {
       const reviews = course.reviews;
       const totalStars = reviews.reduce(
@@ -335,7 +245,6 @@ router.get("/:id", async (req, res) => {
       .populate("category_id", "category_name")
       .populate("trainer_id", "f_Name l_Name trainer_image business_Name role");
 
-    // Map courses to include full image URLs and trainer name
     const UpcomingBatches = upcomingCourses.map((course) => {
       const reviews = course.reviews;
       const totalStars = reviews.reduce(
@@ -376,46 +285,11 @@ router.get("/:id", async (req, res) => {
       };
     });
 
-    // const page = parseInt(req.query.page) || 1;
-    // const limit = parseInt(req.query.limit) || 4;
-
-    // const startIndex = (page - 1) * limit;
-
-    // const result = await Course.find({
-    //   category_id: course_data[0]?.category_id.id,
-    // })
-    //   .sort({ createdAt: -1 })
-    //   .skip(startIndex)
-    //   .limit(limit)
-    //   .populate("category_id", "category_name")
-    //   .populate("trainer_id", "f_Name l_Name");
-
-    // if (!result || result.length === 0) {
-    //   return res.status(404).json({ message: "Course not found" });
-    // } else {
-    //   const baseUrl = req.protocol + "://" + req.get("host");
-
-    //   const relatedCourses = result.map((course) => ({
-    //     ...course._doc,
-    //     thumbnail_image: `${baseUrl}/${course.thumbnail_image.replace(
-    //       /\\/g,
-    //       "/"
-    //     )}`,
-    //     gallary_image: `${baseUrl}/${course.gallary_image.replace(/\\/g, "/")}`,
-    //     trainer_materialImage: `${baseUrl}/${course.trainer_materialImage.replace(
-    //       /\\/g,
-    //       "/"
-    //     )}`,
-    //   }));
-
-    // }
-
     res.status(200).json({
       gallarys: gallarys || "",
       Business_Name: trainer?.business_Name
         ? trainer?.business_Name
         : trainer?.f_Name + " " + trainer?.l_Name,
-      // institutes,
       trainer,
       About: institutes ? institutes.About : About,
       Educations,
@@ -423,16 +297,10 @@ router.get("/:id", async (req, res) => {
       SocialMedias: institutes ? institutes?.SocialMedias : SocialMedias,
       OnGoingBatches,
       UpcomingBatches,
-      // eventsWithThumbnailUrl,
       onlineEventsThumbnailUrl,
       offlienEventsThumbnailUrl,
       productsWithFullImageUrl,
       reviews,
-      // coursesWithFullImageUrl,
-      // question,
-      // Appointments,
-      // Enquirys,
-      // courses: relatedCourses,
     });
   } catch (error) {
     console.log(error);

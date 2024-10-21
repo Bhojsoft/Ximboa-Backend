@@ -6,6 +6,7 @@ const multer = require("multer");
 const NotificationModel = require("../../model/Notifications/Notification.model");
 const { ApiError } = require("../../utils/ApiError");
 const { ApiResponse } = require("../../utils/ApiResponse");
+const { getProductsByFilter } = require("./productRoute/product");
 
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
@@ -232,5 +233,9 @@ router.get("/bytrainer", function (req, res, next) {
       res.status(500).json({ error: err });
     });
 });
+
+router.get("/product", getProductsByFilter)
+
+
 
 module.exports = router;
