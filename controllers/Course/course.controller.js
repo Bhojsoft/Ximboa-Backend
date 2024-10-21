@@ -2,6 +2,7 @@ const Course = require("../../model/course");
 const { ApiError } = require("../../utils/ApiError");
 const { default: mongoose } = require("mongoose");
 const { ApiResponse } = require("../../utils/ApiResponse");
+const { getRoleOrInstitute } = require("../../utils/helper");
 
 // Get courses filtered by multiple categories
 const getCoursesByFilter = async (req, res) => {
@@ -24,7 +25,7 @@ const getCoursesByFilter = async (req, res) => {
       .skip(startIndex)
       .limit(limit)
       .populate("category_id", "category_name")
-      .populate("trainer_id", "f_Name l_Name trainer_image business_Name");
+      .populate("trainer_id", "f_Name l_Name trainer_image business_Name role");
 
     if (!courses || courses.length === 0) {
       return res.status(404).json({
@@ -34,33 +35,47 @@ const getCoursesByFilter = async (req, res) => {
 
     const baseUrl = req.protocol + "://" + req.get("host");
 
-    const coursesWithFullImageUrl = courses.map((course) => ({
-      _id: course?._id,
-      course_name: course?.course_name || "",
-      category_name: course?.category_id?.category_name || "",
-      online_offline: course?.online_offline || "",
-      thumbnail_image: course?.thumbnail_image
-        ? `${baseUrl}/${course?.thumbnail_image?.replace(/\\/g, "/")}`
-        : "",
-      business_Name: course?.trainer_id?.business_Name
-        ? course?.trainer_id?.business_Name
-        : `${course?.trainer_id?.f_Name || ""} ${
-            course?.trainer_id?.l_Name || ""
-          }`.trim() || "",
-      trainer_image: course?.trainer_id?.trainer_image
-        ? `${baseUrl}/${course?.trainer_id?.trainer_image?.replace(/\\/g, "/")}`
-        : "",
-      course_duration:
-        Math.floor(
+    const coursesWithFullImageUrl = courses.map((course) => {
+      const reviews = course.reviews;
+      const totalStars = reviews.reduce(
+        (sum, review) => sum + review.star_count,
+        0
+      );
+      const averageRating = totalStars / reviews.length;
+      const result = {
+        _id: course?._id,
+        category_name: course?.category_id?.category_name || "",
+        course_name: course?.course_name || "",
+        online_offline: course?.online_offline || "",
+        thumbnail_image: course?.thumbnail_image
+          ? `${baseUrl}/${course?.thumbnail_image?.replace(/\\/g, "/")}`
+          : "",
+        trainer_image: course?.trainer_id?.trainer_image
+          ? `${baseUrl}/${course?.trainer_id?.trainer_image?.replace(
+              /\\/g,
+              "/"
+            )}`
+          : "",
+        trainer_id: course?.trainer_id?._id,
+        business_Name: course?.trainer_id?.business_Name
+          ? course?.trainer_id?.business_Name
+          : `${course?.trainer_id?.f_Name || ""} ${
+              course?.trainer_id?.l_Name || ""
+            }`.trim() || "",
+        course_rating: averageRating || "",
+        course_duration: Math.floor(
           Math.round(
             ((course?.end_date - course?.start_date) /
               (1000 * 60 * 60 * 24 * 7)) *
               100
           ) / 100
-        ) || 1,
-      course_price: course?.price || "",
-      course_offer_price: course?.offer_prize || "",
-    }));
+        ),
+        course_price: course?.price || "",
+        course_offer_prize: course?.offer_prize || "",
+        course_flag: getRoleOrInstitute(course?.trainer_id?.role) || "",
+      };
+      return result;
+    });
 
     res.status(200).json(
       new ApiResponse(200, "Filter Courses Success", coursesWithFullImageUrl, {
