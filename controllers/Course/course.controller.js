@@ -1,6 +1,7 @@
 const Course = require("../../model/course");
 const { ApiError } = require("../../utils/ApiError");
 const { default: mongoose } = require("mongoose");
+const { ApiResponse } = require("../../utils/ApiResponse");
 
 // Get courses filtered by multiple categories
 const getCoursesByFilter = async (req, res) => {
@@ -61,12 +62,14 @@ const getCoursesByFilter = async (req, res) => {
       course_offer_price: course?.offer_prize || "",
     }));
 
-    res.status(200).json({
-      totalResults: courses.length,
-      page,
-      limit,
-      courses: coursesWithFullImageUrl,
-    });
+    res.status(200).json(
+      new ApiResponse(200, "Filter Courses Success", coursesWithFullImageUrl, {
+        currentPage: page,
+        totalPages: Math.ceil(courses?.length / limit),
+        totalItems: courses?.length,
+        pageSize: limit,
+      })
+    );
   } catch (error) {
     console.log(error);
     if (error instanceof mongoose.Error.ValidationError) {
