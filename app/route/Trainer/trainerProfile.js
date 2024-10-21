@@ -411,7 +411,7 @@ router.get("/:id", async (req, res) => {
     // }
 
     res.status(200).json({
-      gallarys,
+      gallarys: gallarys || "",
       Business_Name: trainer?.business_Name
         ? trainer?.business_Name
         : trainer?.f_Name + " " + trainer?.l_Name,

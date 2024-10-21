@@ -178,6 +178,9 @@ app.use("/cart", cart);
 const forum = require("./app/route/Forum/Forum.router");
 app.use("/forum", forum);
 
+const courseByCategory = require("./app/route/Course/course.router");
+app.use("/foru", courseByCategory);
+
 const blogs = require("./app/route/Blogs/blog.router");
 app.use("/blog", blogs);
 
