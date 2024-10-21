@@ -362,12 +362,13 @@ router.get("/home", async (req, res) => {
           : "",
         course_rating: averageRating,
         tags: course.tags || "",
-        course_duration:
+        course_duration: Math.floor(
           Math.round(
             ((course.end_date - course.start_date) /
               (1000 * 60 * 60 * 24 * 7)) *
               100
-          ) / 100,
+          ) / 100
+        ) || 1,
         course_price: course.price || "",
         course_offer_prize: course.offer_prize || "",
         course_flag: getRoleOrInstitute(course.trainer_id?.role) || "",

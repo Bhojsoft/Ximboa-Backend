@@ -1,4 +1,7 @@
 const {
+  unifiedSearch,
+} = require("../../../controllers/Search/courseSearch.controller");
+const {
   globalSearch,
   searchCourseByName,
   searchProductByName,
@@ -13,5 +16,6 @@ router.get("/courses", searchCourseByName);
 router.get("/products", searchProductByName);
 router.get("/events", searchEventByName);
 router.get("/trainer", searchTrainerByName);
+router.get("/search/course", unifiedSearch);
 
 module.exports = router;

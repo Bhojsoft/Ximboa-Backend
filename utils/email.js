@@ -27,6 +27,7 @@ async function sendEmail(emailType, recipient, data = "") {
     });
     console.log("Email sent:", info.messageId, data);
   } catch (error) {
+    console.log(error)
     console.error("Error sending email:", error);
   }
 }
