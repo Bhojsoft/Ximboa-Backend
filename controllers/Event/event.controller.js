@@ -23,11 +23,8 @@ const getEventsByFilter = async (req, res) => {
 
     // Find events based on populated category_name using case-insensitive regex
     const events = await Event.find({})
-      .populate("category_id", "category_name") // Populate category_name
-      .populate(
-        "organizer_id",
-        "f_Name l_Name organizer_image business_Name role"
-      )
+      .populate("event_category", "category_name") // Populate category_name
+      .populate("trainerid", "f_Name l_Name organizer_image business_Name role")
       .lean(); // Use lean for better performance
 
     // Use regex to handle spaces and special characters, and perform case-insensitive search
@@ -36,7 +33,7 @@ const getEventsByFilter = async (req, res) => {
         new RegExp(
           `^${cat.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")}$`,
           "i"
-        ).test(event?.category_id?.category_name)
+        ).test(event?.event_category?.category_name)
       );
     });
 
@@ -51,44 +48,27 @@ const getEventsByFilter = async (req, res) => {
     const eventsWithFullImageUrl = filteredEvents
       .slice(startIndex, startIndex + limit)
       .map((event) => {
-        const reviews = event.reviews || [];
-        const totalStars = reviews.reduce(
+        const reviews = event?.reviews;
+        console.log(reviews);
+        const totalStars = reviews?.reduce(
           (sum, review) => sum + review.star_count,
           0
         );
-        const averageRating =
-          reviews.length > 0 ? totalStars / reviews.length : 0;
+        const averageRating = totalStars / reviews?.length;
+
         const result = {
           _id: event?._id,
-          category_name: event?.category_id?.category_name || "",
           event_name: event?.event_name || "",
+          event_date: event?.event_date || "",
+          event_category: event?.event_category?.category_name || "",
           event_type: event?.event_type || "",
-          thumbnail_image: event?.thumbnail_image
-            ? `${baseUrl}/${event?.thumbnail_image?.replace(/\\/g, "/")}`
-            : "",
-          organizer_image: event?.organizer_id?.organizer_image
-            ? `${baseUrl}/${event?.organizer_id?.organizer_image?.replace(
-                /\\/g,
-                "/"
-              )}`
-            : "",
-          organizer_id: event?.organizer_id?._id,
-          business_Name: event?.organizer_id?.business_Name
-            ? event?.organizer_id?.business_Name
-            : `${event?.organizer_id?.f_Name || ""} ${
-                event?.organizer_id?.l_Name || ""
-              }`.trim() || "",
+          event_flag: event?.trainerid?.role || "",
+          trainer_id: event?.trainerid?._id || "",
           event_rating: averageRating || "",
-          event_duration: Math.floor(
-            Math.round(
-              ((event?.end_date - event?.start_date) /
-                (1000 * 60 * 60 * 24 * 7)) *
-                100
-            ) / 100
-          ),
-          event_price: event?.price || "",
-          event_offer_price: event?.offer_price || "",
-          event_flag: getRoleOrInstitute(event?.organizer_id?.role) || "",
+          registered_users: event?.registered_users?.length || "",
+          event_thumbnail: event?.event_thumbnail
+            ? `${baseUrl}/${event?.event_thumbnail?.replace(/\\/g, "/")}`
+            : "",
         };
         return result;
       });

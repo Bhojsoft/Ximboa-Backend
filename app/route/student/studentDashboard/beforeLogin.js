@@ -714,7 +714,7 @@ router.get("/allevents", async (req, res) => {
         event_flag: event?.trainerid?.role || "",
         trainer_id: event?.trainerid?._id || "",
         event_rating: averageRating || "",
-        registered_users: event?.registered_users.length || "",
+        registered_users: event?.registered_users?.length || "",
         event_thumbnail: event?.event_thumbnail
           ? `${baseUrl}/${event?.event_thumbnail?.replace(/\\/g, "/")}`
           : "",
