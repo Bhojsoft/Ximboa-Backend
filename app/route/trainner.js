@@ -15,7 +15,9 @@ const testemonial = require("../../model/testemonial");
 const gallary = require("../../model/gallary");
 const { ApiError } = require("../../utils/ApiError");
 const { jwtAuthMiddleware } = require("../../middleware/auth");
-const { getTrainersByFilter } = require("../../controllers/Trainer/getTrainerByFilter.controller");
+const {
+  getTrainersByFilter,
+} = require("../../controllers/Trainer/getTrainerByFilter.controller");
 
 // Get data according to the trainer Email id
 
@@ -374,6 +376,6 @@ router.get("/", jwtAuthMiddleware, async (req, res) => {
   }
 });
 
-router.get("/filter/trainer", getTrainersByFilter);
+router.get("/filter", getTrainersByFilter);
 
 module.exports = router;
