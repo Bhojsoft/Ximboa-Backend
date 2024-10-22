@@ -46,18 +46,30 @@ const emailTemplates = {
     html: (name, logoUrl) => `
     <div style="font-family: Arial, sans-serif; color: #333;">
   <!-- Header with Logo -->
-  <div style="text-align: center; padding: 20px;">
-    <img src="${logoUrl}" alt="Ximboa Logo" style="width: 150px; max-width: 100%; height: auto;">
+  <div style="text-align: center;">
+    <img src="${logoUrl}" alt="Ximboa Logo" style="width: 150px; padding-right: 30%; max-width: 100%; height: auto;">
+    <p style="text-align:right; padding-right: 7%">Subject: Acknowledgment of Your Inquiry</p>
+    <p style="text-align:right; padding-right: 7%">Received from: contact@ximboa.io</p>
+  </div>
+  <div>
+    <img src="${banner}" alt="Ximboa Banner" style="max-width: 100%; height: auto;"download=false>
   </div>
 
   <!-- Main Body Content -->
   <div style="padding: 0 15px; text-align: center;">
-    <h2 style="color: #0056b3; font-size: 24px;">Hello ${name},</h2>
+    <h2 style="color: #307DFF; font-size: 24px;">Congratulations!</h2>
     <p style="font-size: 16px; line-height: 1.6;">
-      Thank you for registering at <strong>Ximboa</strong>! We're excited to have you on board.
+      Dear ${name}
     </p>
     <p style="font-size: 16px; line-height: 1.6;">
-      If you have any questions, feel free to contact us at <a href="mailto:support@ximboa.com" style="color: #0056b3;">support@ximboa.com</a>.
+      Thank you for your inquiry regarding the [Course Name].
+    </p>
+
+    <p style="font-size: 16px; line-height: 1.6;">
+      If you have any additional questions in the meantime, please feel free to reach out.
+    </p>
+    <p style="font-size: 16px; line-height: 1.6;">
+      To see your inquiries from one single place visit your dashboard.
     </p>
 
     <!-- CTA Button -->
@@ -67,22 +79,9 @@ const emailTemplates = {
   </div>
 
   <!-- Footer -->
-  <div style="background-color: #f1f1f1; padding: 20px; text-align: center; margin-top: 20px;">
-    <p style="font-size: 14px; color: #666;">Follow us on</p>
-    <div style="margin: 10px 0;">
-      <a href="https://facebook.com" style="margin-right: 10px;">
-        <img src="https://ximboa.io/facebook-icon.png" alt="Facebook" style="width: 24px;">
-      </a>
-      <a href="https://twitter.com" style="margin-right: 10px;">
-        <img src="https://ximboa.io/twitter-icon.png" alt="Twitter" style="width: 24px;">
-      </a>
-      <a href="https://instagram.com">
-        <img src="https://ximboa.io/instagram-icon.png" alt="Instagram" style="width: 24px;">
-      </a>
-    </div>
-    <p style="font-size: 14px; color: #666;">
-      Need help? Contact us at <a href="mailto:support@ximboa.com" style="color: #0056b3;">support@ximboa.com</a>
-    </p>
+  <div style="background-color: #265BBD; padding: 20px; text-align: center; white-space: nowrap; margin-top: 20px;">
+    <p style="font-size: 14px; color: #666; display: inline-block; color: #000;">https://ximboa.io</p>
+    <p style="font-size: 14px; color: #666; display: inline-block; color: #000;">contact@ximboa.io</p>    
   </div>
 </div>
 

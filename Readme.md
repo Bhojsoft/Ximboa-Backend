@@ -135,3 +135,20 @@ npm run start
     </div>
   </body>
 </html>
+
+
+
+<div style="margin: 10px 0;">
+      <a href="https://facebook.com" style="margin-right: 10px;">
+        <img src="https://ximboa.io/facebook-icon.png" alt="Facebook" style="width: 24px;">
+      </a>
+      <a href="https://twitter.com" style="margin-right: 10px;">
+        <img src="https://ximboa.io/twitter-icon.png" alt="Twitter" style="width: 24px;">
+      </a>
+      <a href="https://instagram.com">
+        <img src="https://ximboa.io/instagram-icon.png" alt="Instagram" style="width: 24px;">
+      </a>
+    </div>
+    <p style="font-size: 14px; color: #666;">
+      Need help? Contact us at <a href="mailto:support@ximboa.com" style="color: #0056b3;">support@ximboa.com</a>
+    </p>
