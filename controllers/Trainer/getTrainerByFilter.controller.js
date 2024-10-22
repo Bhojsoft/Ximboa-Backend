@@ -106,7 +106,7 @@ const getTrainersByFilter = async (req, res) => {
 
           return {
             _id: trainer?._id,
-            business_Name: institute
+            Business_Name: institute
               ? institute.institute_name
               : trainer.business_Name ||
                 `${trainer.f_Name} ${trainer.l_Name}`.trim(),

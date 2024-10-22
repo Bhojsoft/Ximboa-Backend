@@ -365,8 +365,6 @@ router.get("/", jwtAuthMiddleware, async (req, res) => {
       SocialMedias,
       testimonials,
       gallarys,
-      // OnGoingBatches,
-      // UpcomingBatches,
     });
   } catch (error) {
     // console.log(error);
