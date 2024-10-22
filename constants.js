@@ -46,10 +46,12 @@ const emailTemplates = {
     html: (name, logoUrl) => `
     <div style="font-family: Arial, sans-serif; color: #333;">
   <!-- Header with Logo -->
-  <div style="text-align: center;">
-    <img src="${logoUrl}" alt="Ximboa Logo" style="width: 150px; padding-right: 30%; max-width: 100%; height: auto;">
-    <p style="text-align:right; padding-right: 7%">Subject: Acknowledgment of Your Inquiry</p>
-    <p style="text-align:right; padding-right: 7%">Received from: contact@ximboa.io</p>
+  <div style="text-align: center; white-space: nowrap;">
+    <img src="${logoUrl}" alt="Ximboa Logo" style="width: 150px; padding-right: 30%; display: inline-block; max-width: 100%; height: auto;">
+    <div style="display: inline-block; ">
+      <p style="text-align:right; padding-right: 7%">Subject: Acknowledgment of Your Inquiry</p>
+      <p style="text-align:right; padding-right: 7%">Received from: contact@ximboa.io</p>
+    </div>
   </div>
   <div>
     <img src="${banner}" alt="Ximboa Banner" style="max-width: 100%; height: auto;"download=false>
