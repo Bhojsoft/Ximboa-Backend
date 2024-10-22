@@ -113,7 +113,7 @@ const gallaryRoute = require("./app/route/gallary");
 app.use("/gallary", jwtAuthMiddleware, gallaryRoute);
 
 const productRoute = require("./app/route/product");
-app.use("/product", jwtAuthMiddleware, productRoute);
+app.use("/product", productRoute);
 
 const socialMediaSchema = require("./app/route/socialMedia");
 app.use("/socialMedia", jwtAuthMiddleware, socialMediaSchema);

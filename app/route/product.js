@@ -9,6 +9,7 @@ const { ApiResponse } = require("../../utils/ApiResponse");
 const {
   getProductsByFilter,
 } = require("../../controllers/Product/product.controller");
+const { jwtAuthMiddleware } = require("../../middleware/auth");
 
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
@@ -41,6 +42,7 @@ router.post(
     { name: "product_image", maxCount: 1 },
     { name: "product_gallary", maxCount: 1 },
   ]),
+  jwtAuthMiddleware,
   async (req, res, next) => {
     try {
       const product = new Product({
@@ -87,7 +89,7 @@ router.post(
   }
 );
 
-router.get("/", function (req, res, next) {
+router.get("/", jwtAuthMiddleware, function (req, res, next) {
   Product.find()
     .populate("categoryid", "category_name")
     .then((result) => {
@@ -102,7 +104,7 @@ router.get("/", function (req, res, next) {
 });
 
 // Get a single product by ID
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", jwtAuthMiddleware, async function (req, res, next) {
   const baseUrl = req.protocol + "://" + req.get("host");
   Product.findById(req.params.id)
     .populate("categoryid", "category_name")
@@ -135,7 +137,7 @@ router.get("/:id", async function (req, res, next) {
     });
 });
 
-router.delete("/:productId", async (req, res) => {
+router.delete("/:productId", jwtAuthMiddleware, async (req, res) => {
   try {
     const productId = req.params.productId;
 
@@ -170,6 +172,7 @@ router.put(
     { name: "product_image", maxCount: 1 },
     { name: "product_gallary", maxCount: 1 },
   ]),
+  jwtAuthMiddleware,
   async function (req, res, next) {
     try {
       const existingProduct = await Product.findById(req.params.id);
@@ -222,7 +225,7 @@ router.put(
 );
 
 // Get products by trainer ID
-router.get("/bytrainer", function (req, res, next) {
+router.get("/bytrainer", jwtAuthMiddleware, function (req, res, next) {
   Product.find({ trainer_id: req.user.id })
     .populate("categoryid", "category_name")
     .then((result) => {
