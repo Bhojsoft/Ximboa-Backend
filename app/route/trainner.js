@@ -14,11 +14,13 @@ const SocialMedia = require("../../model/socialMedia");
 const testemonial = require("../../model/testemonial");
 const gallary = require("../../model/gallary");
 const { ApiError } = require("../../utils/ApiError");
+const { jwtAuthMiddleware } = require("../../middleware/auth");
+const { getTrainersByFilter } = require("../../controllers/Trainer/getTrainerByFilter.controller");
 
 // Get data according to the trainer Email id
 
 // Get all data according to the trainer
-router.get("/", async (req, res) => {
+router.get("/", jwtAuthMiddleware, async (req, res) => {
   try {
     const trainerId = req.user.id;
 
@@ -371,5 +373,7 @@ router.get("/", async (req, res) => {
       .json(new ApiError(500, error.message || "Server error", error));
   }
 });
+
+router.get("/filter/trainer", getTrainersByFilter);
 
 module.exports = router;

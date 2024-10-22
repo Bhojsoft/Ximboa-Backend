@@ -13,10 +13,6 @@ const gallary = require("../../../model/gallary");
 const { ApiError } = require("../../../utils/ApiError");
 const InstituteModel = require("../../../model/Institute/Institute.model");
 const { default: mongoose } = require("mongoose");
-const {
-  getTrainersByFilter,
-} = require("../../../controllers/Trainer/getTrainerByFilter.controller");
-const { jwtAuthMiddleware } = require("../../../middleware/auth");
 
 router.get("/:id", async (req, res) => {
   try {
@@ -315,7 +311,5 @@ router.get("/:id", async (req, res) => {
     }
   }
 });
-
-router.get("/filter/trainer", getTrainersByFilter);
 
 module.exports = router;

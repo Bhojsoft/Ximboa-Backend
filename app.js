@@ -146,7 +146,7 @@ const QuestionsRoute = require("./app/route/student/questions");
 app.use("/questions", QuestionsRoute);
 
 const TrainerRoute = require("./app/route/trainner");
-app.use("/trainers", jwtAuthMiddleware, TrainerRoute);
+app.use("/trainers", TrainerRoute);
 
 const trainerINfoRoute = require("./app/route/trainerInfo");
 app.use("/trainerINfo", trainerINfoRoute);
