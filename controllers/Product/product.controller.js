@@ -1,4 +1,5 @@
 const product = require("../../model/product");
+const { getRoleOrInstitute } = require("../../utils/helper");
 const { ApiError } = require("../../utils/ApiError");
 
 const getFilteredProducts = async (categoryArray, page, limit, req) => {
@@ -6,32 +7,52 @@ const getFilteredProducts = async (categoryArray, page, limit, req) => {
   const baseUrl = req.protocol + "://" + req.get("host");
 
   const products = await product
-    .find({ categoryid: { $in: categoryArray } })
-    .sort({ createdAt: -1 })
-    .skip(startIndex)
-    .limit(limit)
+    .find({})
+    .populate("t_id", "f_Name l_Name role")
     .populate("categoryid", "category_name")
-    // .populate("supplier_id", "name contact_info");
+    .lean();
 
-  return products.map((product) => ({
-    _id: product._id,
-    product_name: product.product_name || "",
-    category_name: product.category_id?.category_name || "",
-    supplier_name: product.supplier_id?.name || "",
-    product_image: product.product_image
-      ? `${baseUrl}/${product.product_image.replace(/\\/g, "/")}`
-      : "",
-    price: product.price || 0,
-    offer_price: product.offer_price || 0,
-    stock: product.stock || 0,
-    description: product.description || "",
-  }));
+  const filteredproduct = products.filter((product) => {
+    return categoryArray.some((cat) =>
+      new RegExp(
+        `^${cat.replace(/[-[\]{}()*+?.&,\\^$|#\s]/g, "\\$&")}$`,
+        "i"
+      ).test(product?.categoryid?.category_name)
+    );
+  });
+
+  return filteredproduct
+    .slice(startIndex, startIndex + limit)
+    .map((product) => {
+      const reviews = product.reviews || [];
+      const totalStars = reviews.reduce(
+        (sum, review) => sum + review.star_count,
+        0
+      );
+      const averageRating =
+        reviews.length > 0 ? totalStars / reviews.length : null;
+
+      return {
+        _id: product._id,
+        product_image: product.product_image
+          ? `${baseUrl}/${product.product_image.replace(/\\/g, "/")}`
+          : "",
+        products_category: product.categoryid?.category_name || "",
+        products_rating: averageRating?.toFixed(2) || "No reviews",
+        products_name: product?.product_name || "",
+        products_price: product?.product_prize || "",
+        products_selling_price: product?.product_selling_prize || "",
+        identityFlag: getRoleOrInstitute(product?.t_id?.role) || "",
+        product_flag: product?.product_flag || "",
+      };
+    });
 };
 
 const { asyncHandler } = require("../../utils/asyncHandler");
+const { ApiResponse } = require("../../utils/ApiResponse");
 
 const getProductsByFilter = asyncHandler(async (req, res) => {
-  const { categories, page = 1, limit = 10 } = req.query;
+  const { categories, page = 1, limit = 8 } = req.query;
 
   if (!categories || categories.length === 0) {
     throw new ApiError(400, "Categories parameter is required");
@@ -44,12 +65,14 @@ const getProductsByFilter = asyncHandler(async (req, res) => {
     throw new ApiError(404, "No products found for the selected categories");
   }
 
-  res.status(200).json({
-    totalResults: products.length,
-    page: parseInt(page),
-    limit: parseInt(limit),
-    products,
-  });
+  res.status(200).json(
+    new ApiResponse(200, "Filter Products", products, {
+      currentPage: page,
+      totalPages: Math.ceil(products.length / limit),
+      totalItems: products.length,
+      pageSize: limit,
+    })
+  );
 });
 
 module.exports = {

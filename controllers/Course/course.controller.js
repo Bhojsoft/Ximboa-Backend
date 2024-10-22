@@ -105,7 +105,6 @@ const { default: mongoose } = require("mongoose");
 const { ApiResponse } = require("../../utils/ApiResponse");
 const { getRoleOrInstitute } = require("../../utils/helper");
 
-// Get courses filtered by multiple categories (using category_name)
 const getCoursesByFilter = async (req, res) => {
   try {
     const { categories } = req.query;
@@ -121,16 +120,19 @@ const getCoursesByFilter = async (req, res) => {
 
     const categoryArray = categories.split(",");
 
-    // Find courses based on populated category_name
     const courses = await Course.find({})
-      .populate("category_id", "category_name") // Populate category_name
+      .populate("category_id", "category_name")
       .populate("trainer_id", "f_Name l_Name trainer_image business_Name role")
-      .lean(); // Use lean for better performance
+      .lean();
 
-    // Filter courses by category_name (case-insensitive match)
-    const filteredCourses = courses.filter((course) =>
-      categoryArray.includes(course?.category_id?.category_name)
-    );
+    const filteredCourses = courses.filter((course) => {
+      return categoryArray.some((cat) =>
+        new RegExp(
+          `^${cat.replace(/[-[\]{}()*+?.&,\\^$|#\s]/g, "\\$&")}$`,
+          "i"
+        ).test(course?.category_id?.category_name)
+      );
+    });
 
     if (!filteredCourses || filteredCourses.length === 0) {
       return res.status(404).json({
@@ -171,13 +173,14 @@ const getCoursesByFilter = async (req, res) => {
                 course?.trainer_id?.l_Name || ""
               }`.trim() || "",
           course_rating: averageRating || "",
-          course_duration: Math.floor(
-            Math.round(
-              ((course?.end_date - course?.start_date) /
-                (1000 * 60 * 60 * 24 * 7)) *
-                100
-            ) / 100
-          ),
+          course_duration:
+            Math.floor(
+              Math.round(
+                ((course?.end_date - course?.start_date) /
+                  (1000 * 60 * 60 * 24 * 7)) *
+                  100
+              ) / 100
+            ) || 1,
           course_price: course?.price || "",
           course_offer_prize: course?.offer_prize || "",
           course_flag: getRoleOrInstitute(course?.trainer_id?.role) || "",
