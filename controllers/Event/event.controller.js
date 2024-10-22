@@ -49,7 +49,6 @@ const getEventsByFilter = async (req, res) => {
       .slice(startIndex, startIndex + limit)
       .map((event) => {
         const reviews = event?.reviews;
-        console.log(reviews);
         const totalStars = reviews?.reduce(
           (sum, review) => sum + review.star_count,
           0

@@ -680,7 +680,7 @@ router.get("/event/:id", async (req, res) => {
 // ========================= All Event ====================================
 router.get("/allevents", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 16;
+  const limit = parseInt(req.query.limit) || 8;
 
   const startIndex = (page - 1) * limit;
   const totalEvents = await Event.countDocuments();
@@ -722,17 +722,17 @@ router.get("/allevents", async (req, res) => {
       return result;
     });
 
-    res.status(200).json(eventsWithThumbnails);
+    // res.status(200).json(eventsWithThumbnails);
 
-    // res.status(200).json({
-    //   eventsWithThumbnails,
-    //   pagination: {
-    //     currentPage: page,
-    //     totalPages: Math.ceil(totalEvents / limit),
-    //     totalItems: totalEvents,
-    //     pageSize: limit,
-    //   },
-    // });
+    res.status(200).json({
+      eventsWithThumbnails,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalEvents / limit),
+        totalItems: totalEvents,
+        pageSize: limit,
+      },
+    });
   } catch (err) {
     console.log(err);
     res

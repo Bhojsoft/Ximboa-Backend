@@ -107,7 +107,7 @@ const educationRoute = require("./app/route/education");
 app.use("/education", jwtAuthMiddleware, educationRoute);
 
 const eventSchema = require("./app/route/event");
-app.use("/event", jwtAuthMiddleware, eventSchema);
+app.use("/event", eventSchema);
 
 const gallaryRoute = require("./app/route/gallary");
 app.use("/gallary", jwtAuthMiddleware, gallaryRoute);

@@ -66,7 +66,7 @@ router.post(
   }
 );
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", jwtAuthMiddleware, async (req, res) => {
   try {
     const eventId = req.params.id;
 
@@ -141,7 +141,7 @@ router.get("/:id", async (req, res) => {
 
 // trainer/:trainerid
 
-router.get("/trainer/bytrainer", async (req, res) => {
+router.get("/trainer/bytrainer", jwtAuthMiddleware, async (req, res) => {
   try {
     const baseUrl = req.protocol + "://" + req.get("host");
     const eventsData = await Event.find({ trainerid: req.user.id }).sort({
@@ -252,7 +252,7 @@ router.put(
 );
 
 // Delete an event by ID
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", jwtAuthMiddleware, async (req, res) => {
   try {
     const deletedEvent = await Event.findByIdAndDelete(req.params.id);
     if (!deletedEvent) {
@@ -265,7 +265,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Route to register a user for an event
-router.post("/registerevent", async (req, res) => {
+router.post("/registerevent", jwtAuthMiddleware, async (req, res) => {
   try {
     const evnet_id = req.body.event_id;
     const userId = req.user.id;
