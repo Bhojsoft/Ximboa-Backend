@@ -14,6 +14,7 @@ const product = require("../../../../model/product");
 const { getRoleOrInstitute } = require("../../../../utils/helper");
 
 const NodeCache = require("node-cache");
+const { ApiResponse } = require("../../../../utils/ApiResponse");
 const cache = new NodeCache({ stdTTL: 300, checkperiod: 320 });
 
 router.get("/home", async (req, res) => {
@@ -724,15 +725,14 @@ router.get("/allevents", async (req, res) => {
 
     // res.status(200).json(eventsWithThumbnails);
 
-    res.status(200).json({
-      eventsWithThumbnails,
-      pagination: {
+    res.status(200).json(
+      new ApiResponse(200, "All Events", eventsWithThumbnails, {
         currentPage: page,
         totalPages: Math.ceil(totalEvents / limit),
         totalItems: totalEvents,
         pageSize: limit,
-      },
-    });
+      })
+    );
   } catch (err) {
     console.log(err);
     res
