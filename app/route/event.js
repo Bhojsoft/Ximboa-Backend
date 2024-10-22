@@ -10,6 +10,9 @@ const { asyncHandler } = require("../../utils/asyncHandler");
 const { ApiError } = require("../../utils/ApiError");
 const InstituteModel = require("../../model/Institute/Institute.model");
 const course = require("../../model/course");
+const {
+  getEventsByFilter,
+} = require("../../controllers/Event/event.controller");
 
 // Create a new event
 router.post(
@@ -311,5 +314,7 @@ router.post("/registerevent", async (req, res) => {
     res.status(500).json({ message: "An error occurred", error });
   }
 });
+
+router.get("/filter/event", getEventsByFilter);
 
 module.exports = router;
