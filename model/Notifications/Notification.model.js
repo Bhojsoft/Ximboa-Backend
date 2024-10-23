@@ -36,6 +36,7 @@ const notificationSchema = new Schema({
       "NEW_APPOINTMENT",
       "FORUM_POST_ADDED",
       "FORUM_REPLY_ADDED",
+      "NEW_ENQUIRY",
       "OTHER",
     ],
     required: true,

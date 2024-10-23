@@ -23,7 +23,7 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
 
     // Get trainer details based on the trainer_id from the course
     const trainer_data = await Registration.findById(course.trainer_id).select(
-      "email_id f_Name"
+      "email_id f_Name l_Name"
     );
 
     if (!trainer_data) {
@@ -32,11 +32,12 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
 
     // Check if the student exists
     const student = await Registration.findById(userid).select(
-      "f_Name email_id"
+      "f_Name l_Name email_id"
     );
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
+    console.log(student);
 
     // Check if the student is already enrolled in the course
     const existingEnrollment = await Enrollment.findOne({
@@ -88,7 +89,7 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
     await trainerNotification.save();
 
     // Send email to the trainer notifying about the new student enrollment
-    const trainerName = trainer_data.f_Name;
+    const trainerName = `${trainer_data.f_Name} ${trainer_data.l_Name}`;
     const studentName = student.f_Name;
     sendEmail(
       "enrollmentNotificationToTrainer",
@@ -226,7 +227,6 @@ router.get("/", async (req, res) => {
 //   }
 // });
 
-
 const NodeCache = require("node-cache");
 const cache = new NodeCache({ stdTTL: 3600 }); // Cache data for 1 hour
 
@@ -243,15 +243,18 @@ router.get("/student", jwtAuthMiddleware, async (req, res) => {
       // Find all enrollments for the logged-in student with necessary population
       const enrollment = await Enrollment.find({
         userid: req.user.id,
-      })
-        .populate({
-          path: "course_id",
-          select: "course_name thumbnail_image online_offline price offer_prize start_date end_date",
-          populate: [
-            { path: "category_id", select: "category_name" },
-            { path: "trainer_id", select: "f_Name l_Name trainer_image business_Name role city" },
-          ],
-        });
+      }).populate({
+        path: "course_id",
+        select:
+          "course_name thumbnail_image online_offline price offer_prize start_date end_date",
+        populate: [
+          { path: "category_id", select: "category_name" },
+          {
+            path: "trainer_id",
+            select: "f_Name l_Name trainer_image business_Name role city",
+          },
+        ],
+      });
 
       if (enrollment.length === 0) {
         return res
@@ -271,12 +274,17 @@ router.get("/student", jwtAuthMiddleware, async (req, res) => {
             ? `${baseUrl}/${course?.thumbnail_image.replace(/\\/g, "/")}`
             : "",
           trainer_image: course?.trainer_id?.trainer_image
-            ? `${baseUrl}/${course?.trainer_id?.trainer_image.replace(/\\/g, "/")}`
+            ? `${baseUrl}/${course?.trainer_id?.trainer_image.replace(
+                /\\/g,
+                "/"
+              )}`
             : "",
           trainer_id: course?.trainer_id?._id,
           business_Name: course?.trainer_id?.business_Name
             ? course?.trainer_id?.business_Name
-            : `${course?.trainer_id?.f_Name || ""} ${course?.trainer_id?.l_Name || ""}`.trim() || "",
+            : `${course?.trainer_id?.f_Name || ""} ${
+                course?.trainer_id?.l_Name || ""
+              }`.trim() || "",
           course_rating: "", // Add logic to calculate course rating if needed
           course_duration: Math.round(
             (new Date(course?.end_date) - new Date(course?.start_date)) /
@@ -285,7 +293,9 @@ router.get("/student", jwtAuthMiddleware, async (req, res) => {
           course_price: course?.price || "",
           course_offer_prize: course?.offer_prize || "",
           course_flag:
-            course?.trainer_id?.role === "TRAINER" ? "Institute" : "Self Expert",
+            course?.trainer_id?.role === "TRAINER"
+              ? "Institute"
+              : "Self Expert",
         };
       });
 
@@ -303,9 +313,6 @@ router.get("/student", jwtAuthMiddleware, async (req, res) => {
     });
   }
 });
-
-
-
 
 router.get("/course/:course_id", async (req, res) => {
   try {

@@ -4,6 +4,8 @@ const Enquiry = require("../../model/Enquire");
 const { ApiError } = require("../../utils/ApiError");
 const { ApiResponse } = require("../../utils/ApiResponse");
 const NotificationModel = require("../../model/Notifications/Notification.model");
+const registration = require("../../model/registration");
+const { sendEmail } = require("../../utils/email");
 
 // Create a new enquiry
 router.post("/", async (req, res) => {
@@ -11,9 +13,27 @@ router.post("/", async (req, res) => {
     const { description, trainerid } = req.body;
     const userid = req.user.id;
     const newEnquiry = new Enquiry({ trainerid, description, userid });
-    console.log(newEnquiry);
 
-    await newEnquiry.save();
+    const trainer_data = await registration
+      .findById(trainerid)
+      .select("email_id f_Name l_Name");
+
+    const user = await registration
+      .findById(userid)
+      .select("email_id f_Name l_Name");
+
+    const studentName = `${user?.f_Name} ${user?.l_Name}`;
+    const trainerName = `${trainer_data?.f_Name} ${trainer_data?.l_Name}`;
+    console.log(trainerName);
+
+    sendEmail(
+      "newEnquiry",
+      {
+        name: trainer_data.f_Name,
+        email: trainer_data.email_id,
+      },
+      [trainerName, studentName, (studentEmail = user?.email_id), description]
+    );
 
     const notification = new NotificationModel({
       recipient: trainerid,
@@ -25,6 +45,7 @@ router.post("/", async (req, res) => {
 
     res.status(201).send(newEnquiry);
   } catch (error) {
+    console.log(error);
     res.status(400).send({ message: "Error creating enquiry", error });
   }
 });

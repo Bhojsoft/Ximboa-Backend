@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send a success email
-async function sendEmail(emailType, recipient, data = "") {
+async function sendEmail(emailType, recipient, data = []) {
   try {
     const logoUrl = "https://ximboa.io/wp-content/uploads/2024/08/xlogo.png";
     const { subject, html } = emailTemplates[emailType];
@@ -23,11 +23,11 @@ async function sendEmail(emailType, recipient, data = "") {
       from: `"XIMBOA" <${process.env.EMAIL_USER}>`,
       to: recipient.email,
       subject: subject,
-      html: html(recipient.name, ...data, logoUrl),
+      html: html(recipient.name, logoUrl, ...data),
     });
     console.log("Email sent:", info.messageId, data);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     console.error("Error sending email:", error);
   }
 }
