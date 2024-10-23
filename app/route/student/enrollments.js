@@ -32,13 +32,11 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
 
     // Check if the student exists
     const student = await Registration.findById(userid).select(
-      "f_Name l_Name email_id"
+      "f_Name l_Name email_id mobile_number"
     );
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
-    console.log(student);
-
     // Check if the student is already enrolled in the course
     const existingEnrollment = await Enrollment.findOne({
       userid,
@@ -97,7 +95,13 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
         name: trainer_data.f_Name,
         email: trainer_data.email_id,
       },
-      [trainerName, studentName, courseName]
+      [
+        trainerName,
+        studentName,
+        courseName,
+        (studentEmail = student?.email_id),
+        (studentContactNo = student?.mobile_number),
+      ]
     );
 
     // Return success response with enrollment details

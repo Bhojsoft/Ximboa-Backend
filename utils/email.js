@@ -21,7 +21,7 @@ async function sendEmail(emailType, recipient, data = []) {
     }
     const info = await transporter.sendMail({
       from: `"XIMBOA" <${process.env.EMAIL_USER}>`,
-      to: recipient.email,
+      to: "maheshzalte2000@gmail.com",
       subject: subject,
       html: html(recipient.name, logoUrl, ...data),
     });
