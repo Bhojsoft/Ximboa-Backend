@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
 // Forum Schema
-const ForumSchema = new Schema(
+const ForumSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -12,25 +11,24 @@ const ForumSchema = new Schema(
       type: String,
       required: true,
     },
+    likes: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Registration",
+    },
+    dislikes: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Registration",
+    },
     creator: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Registration",
       required: true,
     },
     category: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      required: true,
     },
-    tags: [
-      {
-        type: String,
-      },
-    ],
-    isPrivate: {
-      type: Boolean,
-      default: false,
-    },
+    tags: [String],
     createdAt: {
       type: Date,
       default: Date.now,
@@ -39,14 +37,14 @@ const ForumSchema = new Schema(
       type: Date,
       default: Date.now,
     },
-    replies: [
+    answers: [
       {
         content: {
           type: String,
           required: true,
         },
         author: {
-          type: Schema.Types.ObjectId,
+          type: mongoose.Schema.Types.ObjectId,
           ref: "Registration",
           required: true,
         },
@@ -60,12 +58,33 @@ const ForumSchema = new Schema(
         },
       },
     ],
-    participants: [
+    comments: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Registration",
+        content: {
+          type: String,
+          required: true,
+        },
+        author: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Registration",
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+        updatedAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
+    // participants: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Registration",
+    //   },
+    // ],
   },
   { timestamps: true }
 );

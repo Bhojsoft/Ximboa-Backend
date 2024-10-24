@@ -1,5 +1,6 @@
 const Forum = require("../../model/Forum/Forum.model"); // Assuming Forum model is located in models folder
 const NotificationModel = require("../../model/Notifications/Notification.model");
+const { formatDate } = require("../../services/servise");
 const { ApiError } = require("../../utils/ApiError");
 const { ApiResponse } = require("../../utils/ApiResponse");
 
@@ -20,7 +21,6 @@ const addForum = async (req, res) => {
       creator: req.user.id,
       category,
       tags,
-      isPrivate: isPrivate || false,
     });
 
     const savedForum = await newForum.save();
@@ -51,10 +51,11 @@ const addForum = async (req, res) => {
 // Controller to get a forum by ID
 const getForumById = async (req, res) => {
   try {
-    const forumId = req.params.id;
+    const baseUrl = req.protocol + "://" + req.get("host");
+    const forumid = req.params.id;
 
-    const forum = await Forum.findById(forumId)
-      .populate("creator", "f_Name l_Name")
+    const forum = await Forum.findById(forumid)
+      .populate("creator", "f_Name l_Name trainer_image")
       .select("-isPrivate -updatedAt");
     if (!forum) {
       return res.status(404).json(new ApiError(404, "Forum not found."));
@@ -62,17 +63,21 @@ const getForumById = async (req, res) => {
 
     return res.status(200).json(
       new ApiResponse(200, "Forum found.", {
-        _id: forum._id,
-        title: forum.title,
-        description: forum.description,
-        creatorId: forum.creator._id,
-        creatorName: forum.creator.f_Name + " " + forum.creator.l_Name,
-        tags: forum.tags,
-        participants: forum.participants,
-        replies: forum.replies.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        ),
-        createdAt: forum.createdAt,
+        _id: forum?._id,
+        title: forum?.title,
+        description: forum?.description,
+        likes: forum?.likes?.length,
+        dislikes: forum?.dislikes?.length,
+        comments: forum?.comments?.length,
+        creator_id: forum?.creator?._id,
+        creator_name: forum?.creator?.f_Name + " " + forum?.creator?.l_Name,
+        trainer_image: forum?.creator?.f_Name
+          ? `${baseUrl}/${forum?.creator?.trainer_image?.replace(/\\/g, "/")}`
+          : "",
+        tags: forum?.tags,
+        participants: forum?.participants,
+        answer_count: forum?.answers?.length,
+        createdAt: formatDate(forum?.createdAt),
       })
     );
   } catch (error) {
@@ -83,16 +88,111 @@ const getForumById = async (req, res) => {
   }
 };
 
+const getForums = async (req, res) => {
+  try {
+    const baseUrl = req.protocol + "://" + req.get("host");
+
+    const forums = await Forum.find()
+      .sort({ createdAt: -1 })
+      .populate("creator", "f_Name l_Name trainer_image")
+      .select("-isPrivate -updatedAt");
+    if (!forums) {
+      return res.status(404).json(new ApiError(404, "Forum not found."));
+    }
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        "Forum found.",
+        forums?.map((forum) => ({
+          _id: forum?._id,
+          title: forum?.title,
+          description: forum?.description,
+          likes: forum?.likes?.length,
+          dislikes: forum?.dislikes?.length,
+          comments: forum?.comments?.length,
+          creator_id: forum?.creator?._id,
+          creator_name: forum?.creator?.f_Name
+            ? `${forum?.creator?.f_Name} ${forum?.creator?.l_Name}`
+            : "",
+          trainer_image: forum?.creator?.trainer_image
+            ? `${baseUrl}/${forum?.creator?.trainer_image?.replace(/\\/g, "/")}`
+            : "",
+          tags: forum?.tags,
+          participants: forum?.participants,
+          answer_count: forum?.answers?.length,
+          createdAt: formatDate(forum?.createdAt),
+        }))
+      )
+    );
+  } catch (error) {
+    console.error("Error retrieving forum:", error);
+    return res
+      .status(500)
+      .json(new ApiError(500, "Server error", error.message));
+  }
+};
+
+// Controller to handle likes and dislikes
+const toggleLikeDislike = async (req, res) => {
+  try {
+    const { forumid } = req.params;
+    const userId = req.user._id;
+
+    const forum = await Forum.findById(forumid);
+    if (!forum) {
+      return res.status(404).json({ message: "Forum post not found" });
+    }
+
+    const hasLiked = forum.likes.includes(userId);
+    const hasDisliked = forum.dislikes.includes(userId);
+
+    // Handle Like
+    if (req?.body?.action === "like") {
+      if (hasLiked) {
+        forum.likes.pull(userId);
+      } else {
+        if (hasDisliked) {
+          forum.dislikes.pull(userId);
+        }
+        forum.likes.push(userId);
+      }
+    }
+
+    if (req.body.action === "dislike") {
+      if (hasDisliked) {
+        forum.dislikes.pull(userId);
+      } else {
+        if (hasLiked) {
+          forum.likes.pull(userId);
+        }
+        forum.dislikes.push(userId);
+      }
+    }
+
+    await forum.save();
+
+    return res.status(200).json({
+      message: `Forum post ${req.body.action}d successfully`,
+      likes: forum.likes.length,
+      dislikes: forum.dislikes.length,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // Controller to add Comment / Reply
 async function addReplyToPost(req, res) {
-  const forumId = req.query.forumid;
+  const forumid = req.query.forumid;
   const userid = req.user.id;
   const replyContent = req.body.replyContent;
-  const post = await Forum.findById(forumId);
+  const post = await Forum.findById(forumid);
   if (!post) {
     throw new Error("Post not found");
   }
-  post.replies.push({
+  post.comments.push({
     content: replyContent,
     author: userid,
   });
@@ -111,5 +211,7 @@ async function addReplyToPost(req, res) {
 module.exports = {
   addForum,
   getForumById,
+  getForums,
+  toggleLikeDislike,
   addReplyToPost,
 };

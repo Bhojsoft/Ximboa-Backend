@@ -432,5 +432,4 @@ router.get("/trainer", async (req, res) => {
   }
 });
 
-
 module.exports = router;
