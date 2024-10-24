@@ -173,7 +173,7 @@ const forgetPassward = async (req, res) => {
         name: user.f_Name,
         email: user.email_id,
       },
-      [resetLink]
+      [resetLink, userName = user.f_Name]
     );
 
     res.status(200).json({ message: "Reset link sent to email", token });

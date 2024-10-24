@@ -38,8 +38,8 @@ router.post("/", async (req, res) => {
     sendEmail(
       "newEnquiryToUser",
       {
-        name: trainer_data.f_Name,
-        email: trainer_data.email_id,
+        name: studentName,
+        email: studentEmail,
       },
       [trainerName, studentName, (studentEmail = user?.email_id), description]
     );

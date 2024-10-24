@@ -851,7 +851,7 @@ const emailTemplates = {
               cursor: pointer;
               width: 100%;
               max-width: 200px;">
-            Sign Up for It's Free
+            <a href="www.ximboa.io" target="_blank" style="color: white; text-decoration: none;">Sign Up for It's Free</a>
           </button>
       </div>
         <div style="margin-top: 8px">
@@ -898,7 +898,7 @@ const emailTemplates = {
               max-width: 250px;
             "
               >
-              <a href=${process.env.FRONTEND_URL}/>Go to Dashboard</a>
+              <a href="www.ximboa.io" target="_blank" style="color: white; text-decoration: none;">Go to Dashboard</a>
             </button>
           </a>
       </div>
@@ -1040,18 +1040,252 @@ const emailTemplates = {
 
   forgotPassword: {
     subject: "Password Reset Request",
-    html: (name, resetLink, logoUrl) => `
-      <div style="font-family: Arial, sans-serif; color: #333;">
-        <div style="text-align: center;">
-          <img src="${logoUrl}" alt="Ximboa Logo" style="width: 150px; margin-bottom: 20px;">
-        </div>
-        <h2>Hello ${name},</h2>
-        <p>We received a request to reset your password for your <strong>Ximboa</strong> account.</p>
-        <p>Please click the link below to reset your password:</p>
-        <p><a href="${resetLink}" style="color: #1a73e8;">Reset Password</a></p>
-        <p>If you did not request a password reset, please ignore this email or contact support if you have any questions.</p>
-        <p>Best regards,<br>Ximboa Team</p>
-      </div>`,
+    html: (name, logoUrl, resetLink) => `
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Reset Password</title>
+        </head>
+        <body
+          style="
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            box-sizing: border-box;
+          "
+        >
+          <div
+            class="container"
+            style="
+              width: 100%;
+              margin: 0 auto;
+              box-shadow: 0 10px 30px rgba(17, 12, 46, 0.1);
+              border-radius: 10px;
+              max-width: 600px;
+              margin: 0 auto;
+              box-sizing: border-box;
+            "
+          >
+            <!-- Header Section -->
+            <div
+              class="header"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #e9eef8;
+                padding: 10px;
+                border-radius: 10px 10px 0 0;
+                flex-wrap: wrap;
+              "
+            >
+              <div style="float:left; width:50%;text-align:start;">
+                <img
+                  src=${logoUrl}
+                  alt="Ximboa Logo"
+                  class="logo"
+                  style="width: 100%; display: inline-block;" />
+              </div>
+              <div class="header-text" style="float:right;width:50%;text-align:end;padding-top:13px">
+                <p class="subject" style="font-size: 16px;margin:0px">Subject: Password Reset</p>
+                <p class="email" style="color: #265bbd;margin:0px">
+                  Received from:
+                  <a
+                    href="mailto:contact@ximboa.io"
+                    style="color: #265bbd; text-decoration: none"
+                    >contact@ximboa.io</a>
+                </p>
+              </div>
+            </div>
+
+            <img
+              src=${banner}
+              alt="Banner Image"
+              class="banner"
+              style="width: 100%; height: auto; display: block"
+            />
+
+            <!-- Content Section -->
+            <div style="text-align:end;margin-top:20px;">
+              <button
+                class="btn-primary"
+                style="
+                  background-color: #265bbd;
+                  color: white;
+                  padding: 10px 20px;
+                  border: none;
+                  border-radius: 10px;
+                  cursor: pointer;
+                  width: 100%;
+                  max-width: 200px;">
+                <a href="www.ximboa.io" target="_blank" style="color: white; text-decoration: none;">Visit Ximboa</a>
+              </button>
+            </div>
+
+            <div style="margin-top: 8px">
+              <p
+                style="
+                  font-size: 28px;
+                  margin-top: 0px;
+                  margin-left: 5px;
+                  font-weight: bold;
+                  color: #307dff;">
+                Password Reset Request
+              </p>
+            </div>
+
+            <div class="content" style="padding: 0px 20px; margin: 0px 20px">
+              <div
+                class="message-section"
+                style="margin-bottom: 20px; line-height: 1.5">
+                <p>Hi ${userName},</p>
+                <p>
+                  We received a request to reset your password. If you made this request, please click the button below to reset your password.
+                  If you didn't request a password reset, you can safely ignore this email.
+                </p>
+              </div>
+
+              <!-- Password Reset Button -->
+              <div style="text-align: center; margin-top: 30px;">
+                <button
+                  class="btn-primary"
+                  style="
+                    background-color: #265bbd;
+                    color: white;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    width: 100%;
+                    max-width: 250px;">
+                  <a href=${resetLink} target="_blank" style="color: white; text-decoration: none;">Reset Password</a>
+                </button>
+              </div>
+
+              <!-- Info Section -->
+              <p style="font-size: 14px; line-height: 1.5; margin-top: 20px;">
+                This link will expire in 30 minutes. If you did not make this request, no changes will be made to your account.
+              </p>
+            </div>
+
+            <!-- Footer Section -->
+            <div
+              class="footer"
+              style="
+                background-color: #265bbd;
+                color: white;
+                padding: 10px 26px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-radius: 0 0 10px 10px;
+                gap: 10px;
+                flex-wrap: wrap;
+              "
+            >
+              <a
+                href="#"
+                class="footer-link"
+                style="
+                  color: white;
+                  text-decoration: none;
+                  width: 100%;
+                  max-width: 150px;
+                  text-align: center;
+                "
+                >www.ximboa.io</a>
+
+              <div
+                class="social-icons"
+                style="
+                  display: flex;
+                  justify-content: center;
+                  font-size: 12px;
+                  flex-direction: row;
+                  width: 100%;
+                  max-width: 250px;
+                  margin-top: 10px;
+                  gap: 10px;
+                "
+              >
+                <a
+                  href="#"
+                  class="icon-border"
+                  style="
+                    border: 1px solid white;
+                    border-radius: 50%;
+                    color: white;
+                    text-align: center;
+                    padding: 5px;">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+                <a
+                  href="#"
+                  class="icon-border"
+                  style="
+                    border: 1px solid white;
+                    border-radius: 50%;
+                    color: white;
+                    text-align: center;
+                    padding: 5px;">
+                  <i class="fab fa-twitter"></i>
+                </a>
+                <a
+                  href="#"
+                  class="icon-border"
+                  style="
+                    border: 1px solid white;
+                    border-radius: 50%;
+                    color: white;
+                    text-align: center;
+                    padding: 5px;">
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <a
+                  href="#"
+                  class="icon-border"
+                  style="
+                    border: 1px solid white;
+                    border-radius: 50%;
+                    color: white;
+                    text-align: center;
+                    padding: 5px;">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a
+                  href="www.ximboa.io"
+                  target="_blank" 
+                  class="icon-border"
+                  style="
+                    border: 1px solid white;
+                    border-radius: 50%;
+                    color: white;
+                    text-align: center;
+                    padding: 5px;">
+                  <i class="fab fa-youtube"></i>
+                </a>
+              </div>
+              <a
+                href="mailto:contact@ximboa.io"
+                class="footer-link"
+                style="
+                  color: white;
+                  text-decoration: none;
+                  width: 100%;
+                  max-width: 200px;
+                  text-align: center;">
+                contact@ximboa.io
+              </a>
+            </div>
+          </div>
+        </body>
+      </html>
+      `,
   },
 
   trainerRequest: {

@@ -13,7 +13,7 @@ const { jwtAuthMiddleware } = require("../../../middleware/auth");
 router.post("/add", jwtAuthMiddleware, addForum);
 router.post("/reply", jwtAuthMiddleware, addReplyToPost);
 router.post("/likedislike/:forumid", jwtAuthMiddleware, toggleLikeDislike);
-router.post("/postanswer/:forumid", jwtAuthMiddleware, postAnswer);
+router.post("/postanswer", jwtAuthMiddleware, postAnswer);
 
 router.get("/:id", getForumById);
 router.get("/", getForums);

@@ -225,8 +225,8 @@ async function addReplyToPost(req, res) {
 // Post an Answer to a Forum
 const postAnswer = async (req, res) => {
   try {
-    const { forumid } = req.params; // Get the forum ID from the request parameters
-    const { content } = req.body; // Get the answer content from the request body
+    const { forumid } = req.body;
+    const { content } = req.body;
     const userId = req.user.id;
 
     if (!content) {
