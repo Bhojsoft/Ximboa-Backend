@@ -11,14 +11,18 @@ const ForumSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    likes: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Registration",
-    },
-    dislikes: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Registration",
-    },
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Registration",
+      },
+    ],
+    dislikes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Registration",
+      },
+    ],
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Registration",

@@ -35,6 +35,15 @@ router.post("/", async (req, res) => {
       [trainerName, studentName, (studentEmail = user?.email_id), description]
     );
 
+    sendEmail(
+      "newEnquiryToUser",
+      {
+        name: trainer_data.f_Name,
+        email: trainer_data.email_id,
+      },
+      [trainerName, studentName, (studentEmail = user?.email_id), description]
+    );
+
     const notification = new NotificationModel({
       recipient: trainerid,
       message: `New inquiry received from ${req.user.id}".`,

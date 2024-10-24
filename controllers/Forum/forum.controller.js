@@ -56,6 +56,7 @@ const getForumById = async (req, res) => {
 
     const forum = await Forum.findById(forumid)
       .populate("creator", "f_Name l_Name trainer_image")
+      .populate("answers.author", "f_Name l_Name trainer_image")
       .select("-isPrivate -updatedAt");
     if (!forum) {
       return res.status(404).json(new ApiError(404, "Forum not found."));
@@ -76,7 +77,18 @@ const getForumById = async (req, res) => {
           : "",
         tags: forum?.tags,
         participants: forum?.participants,
-        answer_count: forum?.answers?.length,
+        answer: forum?.answers
+          ?.map((ans) => ({
+            author_id: ans?.author?._id,
+            content: ans?.content || "",
+            author_name: ans?.author?.f_Name
+              ? `${ans?.author?.f_Name} ${ans?.author?.l_Name}`
+              : "",
+            author_image: ans?.author?.trainer_image
+              ? `${ans?.author?.trainer_image?.replace(/\\/g, "/")}`
+              : "",
+          }))
+          .reverse(),
         createdAt: formatDate(forum?.createdAt),
       })
     );
@@ -137,13 +149,12 @@ const getForums = async (req, res) => {
 const toggleLikeDislike = async (req, res) => {
   try {
     const { forumid } = req.params;
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     const forum = await Forum.findById(forumid);
     if (!forum) {
       return res.status(404).json({ message: "Forum post not found" });
     }
-
     const hasLiked = forum.likes.includes(userId);
     const hasDisliked = forum.dislikes.includes(userId);
 
@@ -172,14 +183,17 @@ const toggleLikeDislike = async (req, res) => {
 
     await forum.save();
 
-    return res.status(200).json({
-      message: `Forum post ${req.body.action}d successfully`,
-      likes: forum.likes.length,
-      dislikes: forum.dislikes.length,
-    });
+    return res.status(200).json(
+      new ApiResponse(200, `Forum post ${req.body.action}d successfully`, {
+        likes: forum.likes.length,
+        dislikes: forum.dislikes.length,
+      })
+    );
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res
+      .status(500)
+      .json(new ApiError(500, "Server error" || error.message, error));
   }
 };
 
@@ -208,10 +222,51 @@ async function addReplyToPost(req, res) {
   res.send("commented");
 }
 
+// Post an Answer to a Forum
+const postAnswer = async (req, res) => {
+  try {
+    const { forumid } = req.params; // Get the forum ID from the request parameters
+    const { content } = req.body; // Get the answer content from the request body
+    const userId = req.user.id;
+
+    if (!content) {
+      return res.status(400).json({ message: "Answer content is required" });
+    }
+
+    // Find the forum by its ID
+    const forum = await Forum.findById(forumid);
+    if (!forum) {
+      return res.status(404).json({ message: "Forum not found" });
+    }
+
+    // Create the answer object
+    const newAnswer = {
+      content,
+      author: userId,
+    };
+
+    // Add the answer to the answers array in the forum document
+    forum.answers.push(newAnswer);
+
+    // Save the updated forum
+    await forum.save();
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Answer posted successfully", forum?.answers));
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json(new ApiError(500, error.message || "Server error", error));
+  }
+};
+
 module.exports = {
   addForum,
   getForumById,
   getForums,
   toggleLikeDislike,
   addReplyToPost,
+  postAnswer,
 };
