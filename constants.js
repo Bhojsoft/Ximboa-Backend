@@ -271,7 +271,7 @@ const emailTemplates = {
             max-width: 250px;
           "
         >
-          Go to Dashboard
+          <a href="www.ximboa.io" target="_blank" style="color: white; text-decoration: none;">Go to Dashboard</a>
         </button>
       </div>
 
@@ -633,8 +633,8 @@ const emailTemplates = {
               width: 100%;
               max-width: 250px;
             "
-              >
-              Go to Dashboard
+            >
+              <a href="www.ximboa.io" target="_blank" style="color: white; text-decoration: none;">Go to Dashboard</a>
             </button>
           </a>
       </div>
@@ -1427,10 +1427,7 @@ const emailTemplates = {
               max-width: 250px;
             "
               >
-              <a style="
-            color: white;">
-              Go to Dashboard
-              </a>
+              <a href="www.ximboa.io" target="_blank" style="color: white; text-decoration: none;">Go to Dashboard</a>
             </button>
       </div>
 
@@ -1795,7 +1792,7 @@ const emailTemplates = {
               max-width: 250px;
             "
               >
-              Go to Dashboard
+              <a href="www.ximboa.io" target="_blank" style="color: white; text-decoration: none;">Go to Dashboard</a>
             </button>
           </a>
       </div>
@@ -1938,28 +1935,613 @@ const emailTemplates = {
 
   roleChangeRequestToSuperAdmin: {
     subject: "Role Change Request",
-    html: (requested_Role, userId, userEmail, userName, logoUrl) => `
-      <div>
-        <div style="text-align: center;">
-          <img src="${logoUrl}" alt="Course Logo" style="width: 150px; margin-bottom: 20px;">
-        </div>
-        <h3>New Role Change Request</h3>
-        <p>User <strong>${userName}</strong> (${userEmail}) has requested to change their role to <strong>${requested_Role}</strong>.</p>
-        <p>User ID: ${userId}</p>
-        <p>Please log in to your admin dashboard to approve or deny this request.</p>
-      </div>
+    html: (name, logoUrl, requested_Role, userId, userEmail, userName) => `
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Email</title>
+        </head>
+        <body
+          style="
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            box-sizing: border-box;
+          "
+        >
+          <div
+            class="container"
+            style="
+              width: 100%;
+              margin: 0 auto;
+              box-shadow: 0 10px 30px rgba(17, 12, 46, 0.1);
+              border-radius: 10px;
+              max-width: 600px;
+              margin: 0 auto;
+              box-sizing: border-box;
+            "
+          >
+            <!-- Header Section -->
+            <div
+              class="header"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background-color: #e9eef8;
+                padding: 10px;
+                border-radius: 10px 10px 0 0;
+                flex-wrap: wrap;
+              "
+            >
+            <div style="float:left; width:50%;text-align:start;"> 
+            <img
+                src=${logoUrl}
+                alt="Ximboa Logo"
+                class="logo"
+                style="width: 100%; display: inline-block;"/>
+              </div>
+              <div class="header-text" style="float:right;width:50%;text-align:end;padding-top:13px">
+                <p class="subject" style="font-size: 16px;margin:0px">Subject: Course Inquiry</p>
+                <p class="email" style="color: #265bbd;margin:0px">
+                  Received from:
+                  <a
+                    href="mailto:contact@ximboa.io"
+                    style="color: #265bbd; text-decoration: none"
+                    >contact@ximboa.io</a>
+                </p>
+              </div>
+            </div>
+
+            <img
+              src=${banner}
+              alt="Banner Image"
+              class="banner"
+              style="width: 100%; height: auto; display: block"
+            />
+
+            <!-- Content Section -->
+            <div style="text-align:end;margin-top:20px;">
+            <button
+                  class="btn-primary"
+                  style="
+                    background-color: #265bbd;
+                    color: white;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    width: 100%;
+                    max-width: 200px;">
+                  Sign Up for It's Free
+                </button>
+            </div>
+              
+            <div class="content" style="padding: 0px 20px; margin: 0px 20px">
+              <div
+                class="message-section"
+                style="margin-bottom: 20px; line-height: 1.5">
+                <p>Hi ${name},</p>
+                <p>You have received a new Request to Role Change.</p>
+              </div>
+
+              <!-- Table Section -->
+              <div class="table-container" style="margin-bottom: 20px">
+                <table
+                  class="info-table"
+                  style="
+                    width: 100%;
+                    border-collapse: collapse;
+                    max-width: 100%;
+                    margin: 0 auto;
+                  "
+                >
+                  <tbody>
+                    <tr>
+                      <td
+                        style="
+                          padding: 10px;
+                          border: 1px solid #ddd;
+                          text-align: left;
+                          font-size: 14px;
+                        "
+                      >
+                        Name
+                      </td>
+                      <td
+                        style="
+                          padding: 10px;
+                          border: 1px solid #ddd;
+                          text-align: left;
+                          font-size: 14px;
+                        "
+                      >
+                        ${userName}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style="
+                          padding: 10px;
+                          border: 1px solid #ddd;
+                          text-align: left;
+                          font-size: 14px;
+                        "
+                      >
+                        Email
+                      </td>
+                      <td
+                        style="
+                          padding: 10px;
+                          border: 1px solid #ddd;
+                          text-align: left;
+                          font-size: 14px;
+                        "
+                      >
+                        <a href="" type="email" style="color: #265bbd">${userEmail}</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style="
+                          padding: 10px;
+                          border: 1px solid #ddd;
+                          text-align: left;
+                          font-size: 14px;
+                        "
+                      >
+                        Subject
+                      </td>
+                      <td
+                        style="
+                          padding: 10px;
+                          border: 1px solid #ddd;
+                          text-align: left;
+                          font-size: 14px;
+                        "
+                      >
+                        Role Change Request
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        style="
+                          padding: 10px;
+                          border: 1px solid #ddd;
+                          text-align: left;
+                          font-size: 14px;
+                        "
+                      >
+                        Requested Role
+                      </td>
+                      <td
+                        style="
+                          padding: 10px;
+                          border: 1px solid #ddd;
+                          text-align: left;
+                          font-size: 14px;
+                        "
+                      >
+                        ${requested_Role}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Dashboard Section -->
+              <p style="font-size: 14px; line-height: 1.5">
+                To see status, visit your dashboard.
+              </p>
+              <a style="
+                  color: white;">
+                <button
+                  class="btn-primary dashboard-btn"
+                  style="
+                    background-color: #265bbd;
+                    color: white;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    margin: 30px 0;
+                    width: 100%;
+                    max-width: 250px;
+                  "
+                    >
+                    <a href="www.ximboa.io" target="_blank" style="color: white; text-decoration: none;">Go to Dashboard</a>
+                  </button>
+                </a>
+            </div>
+
+            <!-- Footer Section -->
+            <div
+              class="footer"
+              style="
+                background-color: #265bbd;
+                color: white;
+                padding: 10px 26px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-radius: 0 0 10px 10px;
+                gap: 10px;
+                flex-wrap: wrap;
+              "
+            >
+              <a
+                href="#"
+                class="footer-link"
+                style="
+                  color: white;
+                  text-decoration: none;
+                  width: 100%;
+                  max-width: 150px;
+                  text-align: center;
+                "
+                >www.ximboa.io</a
+              >
+              <div
+                class="social-icons"
+                style="
+                  display: flex;
+                  justify-content: center;
+                  font-size: 12px;
+                  flex-direction: row;
+                  width: 100%;
+                  max-width: 250px;
+                  margin-top: 10px;
+                  gap: 10px;
+                "
+              >
+                <a
+                  href="#"
+                  class="icon-border"
+                  style="
+                    border: 1px solid white;
+                    border-radius: 50%;
+                    color: white;
+                    text-align: center;
+                    padding: 5px;
+                  "
+                  ><i class="fab fa-facebook-f"></i
+                ></a>
+                <a
+                  href="#"
+                  class="icon-border"
+                  style="
+                    border: 1px solid white;
+                    border-radius: 50%;
+                    color: white;
+                    text-align: center;
+                    padding: 5px;
+                  "
+                  ><i class="fab fa-twitter"></i
+                ></a>
+                <a
+                  href="#"
+                  class="icon-border"
+                  style="
+                    border: 1px solid white;
+                    border-radius: 50%;
+                    color: white;
+                    text-align: center;
+                    padding: 5px;
+                  "
+                  ><i class="fab fa-instagram"></i
+                ></a>
+                <a
+                  href="#"
+                  class="icon-border"
+                  style="
+                    border: 1px solid white;
+                    border-radius: 50%;
+                    color: white;
+                    text-align: center;
+                    padding: 5px;
+                  "
+                  ><i class="fab fa-linkedin-in"></i
+                ></a>
+                <a
+                  href="#"
+                  class="icon-border"
+                  style="
+                    border: 1px solid white;
+                    border-radius: 50%;
+                    color: white;
+                    text-align: center;
+                    padding: 5px;
+                  "
+                  ><i class="fab fa-youtube"></i
+                ></a>
+              </div>
+              <a
+                href="mailto:contact@ximboa.io"
+                class="footer-link"
+                style="
+                  color: white;
+                  text-decoration: none;
+                  width: 100%;
+                  max-width: 200px;
+                  text-align: center;
+                "
+                >contact@ximboa.io</a
+              >
+            </div>
+          </div>
+        </body>
+      </html>
     `,
   },
 
   roleChangeApproved: {
     subject: "Your Role Change Request Has Been Approved",
     html: (userName, approvedRole, logoUrl) => `
-      <div style="font-family: Arial, sans-serif; color: #333;">
-        <h2>Hello ${userName},</h2>
-        <p>We are pleased to inform you that your request to change your role to <strong>${approvedRole}</strong> has been approved.</p>
-        <p>Welcome to your new role!</p>
-        <p>Best regards,<br>The Team</p>
+      // <div style="font-family: Arial, sans-serif; color: #333;">
+      //   <h2>Hello ${userName},</h2>
+      //   <p>We are pleased to inform you that your request to change your role to <strong>${approvedRole}</strong> has been approved.</p>
+      //   <p>Welcome to your new role!</p>
+      //   <p>Best regards,<br>The Team</p>
+      // </div>
+
+
+      <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Role Change Approved</title>
+  </head>
+  <body
+    style="
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    "
+  >
+    <div
+      class="container"
+      style="
+        width: 100%;
+        margin: 0 auto;
+        box-shadow: 0 10px 30px rgba(17, 12, 46, 0.1);
+        border-radius: 10px;
+        max-width: 600px;
+        margin: 0 auto;
+        box-sizing: border-box;
+      "
+    >
+      <!-- Header Section -->
+      <div
+        class="header"
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #e9eef8;
+          padding: 10px;
+          border-radius: 10px 10px 0 0;
+          flex-wrap: wrap;
+        "
+      >
+        <div style="float:left; width:50%;text-align:start;"> 
+          <img
+            src=${logoUrl}
+            alt="Ximboa Logo"
+            class="logo"
+            style="width: 100%; display: inline-block;"
+          />
+        </div>
+        <div class="header-text" style="float:right;width:50%;text-align:end;padding-top:13px">
+          <p class="subject" style="font-size: 16px;margin:0px">Subject: Role Change Approved</p>
+          <p class="email" style="color: #265bbd;margin:0px">
+            Received from:
+            <a
+              href="mailto:contact@ximboa.io"
+              style="color: #265bbd; text-decoration: none"
+              >contact@ximboa.io</a>
+          </p>
+        </div>
       </div>
+
+      <img
+        src=${banner}
+        alt="Banner Image"
+        class="banner"
+        style="width: 100%; height: auto; display: block"
+      />
+
+      <!-- Content Section -->
+      <div style="text-align:end;margin-top:20px;">
+        <button
+          class="btn-primary"
+          style="
+            background-color: #265bbd;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 200px;">
+          <a href="www.ximboa.io" target="_blank" style="color: white; text-decoration: none;">Visit Your Dashboard</a>
+        </button>
+      </div>
+
+      <div style="margin-top: 8px">
+        <p
+          style="
+            font-size: 28px;
+            margin-top: 0px;
+            margin-left: 5px;
+            font-weight: bold;
+            color: #307dff;">
+          Congratulations!
+        </p>
+      </div>
+
+      <div class="content" style="padding: 0px 20px; margin: 0px 20px">
+        <div
+          class="message-section"
+          style="margin-bottom: 20px; line-height: 1.5">
+          <p>Hi ${userName},</p>
+          <p>We are pleased to inform you that your request to change your role to <strong>${requested_Role}</strong> has been approved.<br>
+          You can now access your account with the new role permissions.<br>
+          Please log in to your dashboard to explore your updated privileges.
+          </p>
+        </div>
+
+        <!-- Dashboard Section -->
+        <p style="font-size: 14px; line-height: 1.5">
+          To manage your account and take advantage of your new permissions, visit your dashboard.
+        </p>
+        <a style="color: white;">
+          <button
+            class="btn-primary dashboard-btn"
+            style="
+              background-color: #265bbd;
+              color: white;
+              padding: 10px 20px;
+              border: none;
+              border-radius: 10px;
+              cursor: pointer;
+              margin: 30px 0;
+              width: 100%;
+              max-width: 250px;
+            ">
+            <a href="www.ximboa.io" target="_blank" style="color: white; text-decoration: none;">Go to Dashboard</a>
+          </button>
+        </a>
+      </div>
+
+      <!-- Footer Section -->
+      <div
+        class="footer"
+        style="
+          background-color: #265bbd;
+          color: white;
+          padding: 10px 26px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-radius: 0 0 10px 10px;
+          gap: 10px;
+          flex-wrap: wrap;
+        "
+      >
+        <a
+          href="#"
+          class="footer-link"
+          style="
+            color: white;
+            text-decoration: none;
+            width: 100%;
+            max-width: 150px;
+            text-align: center;
+          "
+          >www.ximboa.io</a
+        >
+        <div
+          class="social-icons"
+          style="
+            display: flex;
+            justify-content: center;
+            font-size: 12px;
+            flex-direction: row;
+            width: 100%;
+            max-width: 250px;
+            margin-top: 10px;
+            gap: 10px;
+          "
+        >
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              border: 1px solid white;
+              border-radius: 50%;
+              color: white;
+              text-align: center;
+              padding: 5px;
+            "
+            ><i class="fab fa-facebook-f"></i
+          ></a>
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              border: 1px solid white;
+              border-radius: 50%;
+              color: white;
+              text-align: center;
+              padding: 5px;
+            "
+            ><i class="fab fa-twitter"></i
+          ></a>
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              border: 1px solid white;
+              border-radius: 50%;
+              color: white;
+              text-align: center;
+              padding: 5px;
+            "
+            ><i class="fab fa-instagram"></i
+          ></a>
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              border: 1px solid white;
+              border-radius: 50%;
+              color: white;
+              text-align: center;
+              padding: 5px;
+            "
+            ><i class="fab fa-linkedin-in"></i
+          ></a>
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              border: 1px solid white;
+              border-radius: 50%;
+              color: white;
+              text-align: center;
+              padding: 5px;
+            "
+            ><i class="fab fa-youtube"></i
+          ></a>
+        </div>
+        <a
+          href="mailto:contact@ximboa.io"
+          class="footer-link"
+          style="
+            color: white;
+            text-decoration: none;
+            width: 100%;
+            max-width: 200px;
+            text-align: center;
+          "
+          >contact@ximboa.io</a
+        >
+      </div>
+    </div>
+  </body>
+</html>
+
+
     `,
   },
 

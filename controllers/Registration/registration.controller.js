@@ -231,7 +231,7 @@ const requestRoleChange = asyncHandler(async (req, res) => {
       if (requested_Role == "SELF_EXPERT") {
         const user = await Registration.findById(userId);
 
-        if (user.requested_Role) {
+        if (user?.requested_Role) {
           return res
             .status(400)
             .json(
