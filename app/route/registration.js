@@ -16,6 +16,7 @@ const {
   // requestToBecomeTrainer,
   resetPassword,
 } = require("../../controllers/Registration/registration.controller");
+const { formatDate } = require("../../services/servise");
 
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
@@ -129,12 +130,10 @@ router.post("/", upload.single("trainer_image"), async function (req, res) {
     await notification.save();
 
     // Respond with the token
-    res
-      .status(200)
-      .json({
-        token,
-        profile_image: `${baseUrl}/${result.trainer_image.replace(/\\/g, "/")}`,
-      });
+    res.status(200).json({
+      token,
+      profile_image: `${baseUrl}/${result.trainer_image.replace(/\\/g, "/")}`,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json(new ApiError(500, err.message || "Server Error", err));
@@ -210,6 +209,7 @@ router.put(
         youtube,
         linkedin,
         rating_count,
+        skills,
         address1,
         address2,
         city,
@@ -261,6 +261,7 @@ router.put(
       if (state) user.state = state;
       if (pincode) user.pincode = pincode;
       if (trainer_image) user.trainer_image = trainer_image;
+      if (skills) user.skills = skills;
 
       const updatedUser = await user.save();
 
@@ -299,20 +300,6 @@ router.get("/email/:email_id", async (req, res) => {
   }
 });
 
-// Get all trainer ----------------------------------------------------------
-router.get("/", function (req, res) {
-  Registration.find()
-    .then((result) => {
-      res.status(200).json({
-        allRegistration: result,
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ error: err });
-    });
-});
-
 // Get trainer by Id ----------------------------------------------------------
 router.get("/trainer", jwtAuthMiddleware, function (req, res) {
   const baseUrl = req.protocol + "://" + req.get("host");
@@ -327,7 +314,7 @@ router.get("/trainer", jwtAuthMiddleware, function (req, res) {
         mobile_number: trainer?.mobile_number,
         whatsapp_no: trainer?.whatsapp_no,
         email_id: trainer?.email_id,
-        date_of_birth: trainer?.date_of_birth,
+        date_of_birth: formatDate(trainer?.date_of_birth),
         rating_count: trainer?.rating_count,
         address1: trainer?.address1,
         address2: trainer?.address2,
@@ -335,6 +322,7 @@ router.get("/trainer", jwtAuthMiddleware, function (req, res) {
         country: trainer?.country,
         state: trainer?.state,
         pincode: trainer?.pincode,
+        skills: trainer?.skills,
         categories: trainer?.categories,
         trainer_image: trainer?.trainer_image
           ? `${baseUrl}/${trainer?.trainer_image?.replace(/\\/g, "/")}`

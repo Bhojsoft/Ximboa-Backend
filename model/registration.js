@@ -113,7 +113,9 @@ const RegistrationSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Category",
     },
-
+    skills: {
+      type: [String],
+    },
     resetPasswordToken: String,
     resetPasswordExpires: Number,
   },

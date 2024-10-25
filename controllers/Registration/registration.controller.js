@@ -173,7 +173,7 @@ const forgetPassward = async (req, res) => {
         name: user.f_Name,
         email: user.email_id,
       },
-      [resetLink, userName = user.f_Name]
+      [resetLink, (userName = user.f_Name)]
     );
 
     res.status(200).json({ message: "Reset link sent to email", token });
@@ -653,7 +653,7 @@ const approveRoleChange = asyncHandler(async (req, res) => {
       sendEmail(
         "roleChangeApproved",
         { name: user.f_Name, email: user.email_id },
-        [approvedRole]
+        [(userName = user.f_Name), approvedRole]
       );
 
       const notificationForApproval = new NotificationModel({
