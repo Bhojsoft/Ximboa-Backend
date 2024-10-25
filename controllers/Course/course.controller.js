@@ -1,104 +1,3 @@
-// const Course = require("../../model/course");
-// const { ApiError } = require("../../utils/ApiError");
-// const { default: mongoose } = require("mongoose");
-// const { ApiResponse } = require("../../utils/ApiResponse");
-// const { getRoleOrInstitute } = require("../../utils/helper");
-
-// // Get courses filtered by multiple categories
-// const getCoursesByFilter = async (req, res) => {
-//   try {
-//     const { categories } = req.query;
-//     const page = parseInt(req.query.page) || 1;
-//     const limit = parseInt(req.query.limit) || 10;
-//     const startIndex = (page - 1) * limit;
-
-//     if (!categories || categories.length === 0) {
-//       return res.status(400).json({
-//         message: "Categories parameter is required",
-//       });
-//     }
-
-//     const categoryArray = categories.split(",");
-
-//     const courses = await Course.find({ category_id: { $in: categoryArray } })
-//       .sort({ createdAt: -1 })
-//       .skip(startIndex)
-//       .limit(limit)
-//       .populate("category_id", "category_name")
-//       .populate("trainer_id", "f_Name l_Name trainer_image business_Name role");
-
-//     if (!courses || courses.length === 0) {
-//       return res.status(404).json({
-//         message: "No courses found for the selected categories",
-//       });
-//     }
-
-//     const baseUrl = req.protocol + "://" + req.get("host");
-
-//     const coursesWithFullImageUrl = courses.map((course) => {
-//       const reviews = course.reviews;
-//       const totalStars = reviews.reduce(
-//         (sum, review) => sum + review.star_count,
-//         0
-//       );
-//       const averageRating = totalStars / reviews.length;
-//       const result = {
-//         _id: course?._id,
-//         category_name: course?.category_id?.category_name || "",
-//         course_name: course?.course_name || "",
-//         online_offline: course?.online_offline || "",
-//         thumbnail_image: course?.thumbnail_image
-//           ? `${baseUrl}/${course?.thumbnail_image?.replace(/\\/g, "/")}`
-//           : "",
-//         trainer_image: course?.trainer_id?.trainer_image
-//           ? `${baseUrl}/${course?.trainer_id?.trainer_image?.replace(
-//               /\\/g,
-//               "/"
-//             )}`
-//           : "",
-//         trainer_id: course?.trainer_id?._id,
-//         business_Name: course?.trainer_id?.business_Name
-//           ? course?.trainer_id?.business_Name
-//           : `${course?.trainer_id?.f_Name || ""} ${
-//               course?.trainer_id?.l_Name || ""
-//             }`.trim() || "",
-//         course_rating: averageRating || "",
-//         course_duration: Math.floor(
-//           Math.round(
-//             ((course?.end_date - course?.start_date) /
-//               (1000 * 60 * 60 * 24 * 7)) *
-//               100
-//           ) / 100
-//         ),
-//         course_price: course?.price || "",
-//         course_offer_prize: course?.offer_prize || "",
-//         course_flag: getRoleOrInstitute(course?.trainer_id?.role) || "",
-//       };
-//       return result;
-//     });
-
-//     res.status(200).json(
-//       new ApiResponse(200, "Filter Courses Success", coursesWithFullImageUrl, {
-//         currentPage: page,
-//         totalPages: Math.ceil(courses?.length / limit),
-//         totalItems: courses?.length,
-//         pageSize: limit,
-//       })
-//     );
-//   } catch (error) {
-//     console.log(error);
-//     if (error instanceof mongoose.Error.ValidationError) {
-//       res.status(400).json(new ApiError(400, "Validation Error", error.errors));
-//     } else {
-//       res.status(500).json(new ApiError(500, "Server Error", error));
-//     }
-//   }
-// };
-
-// module.exports = {
-//   getCoursesByFilter,
-// };
-
 const Course = require("../../model/course");
 const { ApiError } = require("../../utils/ApiError");
 const { default: mongoose } = require("mongoose");
@@ -163,6 +62,142 @@ const getCourses = asyncHandler(async (req, res, next) => {
       totalPages,
       totalCourses,
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(new ApiError(500, err.message || "Server Error", err));
+  }
+});
+
+const getCourseById = asyncHandler(async (req, res, next) => {
+  const baseUrl = req.protocol + "://" + req.get("host");
+
+  try {
+    const courseData = await Course.findById(req.params.id)
+      .populate("category_id", "category_name -_id")
+      .populate("trainer_id", "f_Name l_Name business_Name trainer_image role");
+
+    if (!courseData) {
+      return res
+        .status(404)
+        .json(new ApiError(404, "Course not found", "Invalid course ID"));
+    }
+
+    const reviews = courseData.reviews;
+    const totalStars = reviews.reduce(
+      (sum, review) => sum + review.star_count,
+      0
+    );
+    const averageRating = totalStars / reviews.length;
+
+    const courseWithFullImageUrls = {
+      _id: courseData?._id,
+      course_name: courseData?.course_name || "",
+      course_brief_info: courseData?.course_brief_info || "",
+      course_information: courseData?.course_information || "",
+      category_name: courseData?.category_id?.category_name || "",
+      online_offline: courseData?.online_offline || "",
+      thumbnail_image: courseData?.thumbnail_image
+        ? `${baseUrl}/${courseData?.thumbnail_image.replace(/\\/g, "/")}`
+        : "",
+      start_date: courseData?.start_date || "",
+      end_date: courseData?.end_date || "",
+      start_time: courseData?.start_time || "",
+      end_time: courseData?.end_time || "",
+      business_Name:
+        courseData?.trainer_id?.business_Name ||
+        `${courseData?.trainer_id?.f_Name || ""} ${
+          courseData?.trainer_id?.l_Name || ""
+        }`.trim() ||
+        "",
+      trainer_image: courseData?.trainer_id?.trainer_image
+        ? `${baseUrl}/${courseData?.trainer_id?.trainer_image.replace(
+            /\\/g,
+            "/"
+          )}`
+        : "",
+      trainer_id: courseData?.trainer_id?._id,
+      course_rating: averageRating || "",
+      course_duration: Math.floor(
+        Math.round(
+          ((courseData?.end_date - courseData?.start_date) /
+            (1000 * 60 * 60 * 24 * 7)) *
+            100
+        ) / 100
+      ),
+      price: courseData?.price || "",
+      tags: courseData?.tags || "",
+      offer_prize: courseData?.offer_prize || "",
+      course_flag: courseData?.trainer_id?.role || "",
+    };
+
+    res.status(200).json(courseWithFullImageUrls);
+  } catch (err) {
+    console.error("Error fetching course:", err);
+    res.status(500).json(new ApiError(500, "Server Error", err));
+  }
+});
+
+const updateCourseById = asyncHandler(async (req, res) => {
+  const courseId = req.params.id;
+  const updateData = {
+    course_name: req.body.course_name,
+    online_offline: req.body.online_offline,
+    price: req.body.price,
+    offer_prize: req.body.offer_prize,
+    start_date: req.body.start_date,
+    end_date: req.body.end_date,
+    start_time: req.body.start_time,
+    end_time: req.body.end_time,
+    tags: req.body.tags,
+    course_brief_info: req.body.course_brief_info,
+    course_information: req.body.course_information,
+    thumbnail_image: req.files["thumbnail_image"]
+      ? req.files["thumbnail_image"][0].path
+      : undefined,
+    gallary_image: req.files["gallary_image"]
+      ? req.files["gallary_image"][0].path
+      : undefined,
+    trainer_materialImage: req.files["trainer_materialImage"]
+      ? req.files["trainer_materialImage"][0].path
+      : undefined,
+    category_id: req.body.category_id,
+    trainer_id: req.user.id,
+  };
+
+  try {
+    const updatedCourse = await Course.findByIdAndUpdate(courseId, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedCourse) {
+      return res.status(404).json(new ApiError(404, "Course not found"));
+    }
+
+    const notification = new NotificationModel({
+      recipient: req.user.id,
+      message: `Your course "${updatedCourse.course_name}" has been updated successfully.`,
+      activityType: "COURSE_UPDATE",
+      relatedId: updatedCourse._id,
+    });
+
+    await notification.save();
+
+    const attendees = updatedCourse.registered_users;
+
+    if (attendees) {
+      const notifications = attendees?.map((attendee) => ({
+        recipient: attendee,
+        message: `The course "${updatedCourse.course_name}" has been updated.`,
+        activityType: "COURSE_UPDATE",
+        relatedId: updatedCourse._id,
+      }));
+      await NotificationModel.insertMany(notifications);
+    }
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, "Course updated successfully", updatedCourse));
   } catch (err) {
     console.error(err);
     res.status(500).json(new ApiError(500, err.message || "Server Error", err));
@@ -333,6 +368,8 @@ const getCoursesByFilter = asyncHandler(async (req, res) => {
 
 module.exports = {
   getCourses,
+  getCourseById,
+  updateCourseById,
   postCourse,
   getCoursesByFilter,
 };
