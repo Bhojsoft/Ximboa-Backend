@@ -6,6 +6,7 @@ const { sendEmail } = require("../../utils/email");
 const { ApiError } = require("../../utils/ApiError");
 const { ApiResponse } = require("../../utils/ApiResponse");
 const NotificationModel = require("../../model/Notifications/Notification.model");
+const { formatDate } = require("../../services/servise");
 
 const multer = require("multer");
 const {
@@ -17,7 +18,6 @@ const {
   resetPassword,
   addSkills,
 } = require("../../controllers/Registration/registration.controller");
-const { formatDate } = require("../../services/servise");
 
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
@@ -315,7 +315,9 @@ router.get("/trainer", jwtAuthMiddleware, function (req, res) {
         mobile_number: trainer?.mobile_number,
         whatsapp_no: trainer?.whatsapp_no,
         email_id: trainer?.email_id,
-        date_of_birth: formatDate(trainer?.date_of_birth),
+        date_of_birth: trainer?.date_of_birth
+          ? formatDate(trainer?.date_of_birth)
+          : "",
         rating_count: trainer?.rating_count,
         address1: trainer?.address1,
         address2: trainer?.address2,
