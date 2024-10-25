@@ -291,6 +291,7 @@ router.get("/:id", async (req, res) => {
         ? trainer?.business_Name
         : trainer?.f_Name + " " + trainer?.l_Name,
       trainer,
+      skills: trainer?.skills || "",
       About: institutes ? institutes.About : About,
       Educations,
       testimonials,
