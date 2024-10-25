@@ -361,12 +361,7 @@ router.get(
   getAllRequestsByAdminId
 );
 
-
-router.post(
-  "/addskills",
-  jwtAuthMiddleware,
-  addSkills
-);
+router.post("/addskills", jwtAuthMiddleware, addSkills);
 
 // POST route to initiate password reset
 router.post("/forget-password", forgetPassward);
