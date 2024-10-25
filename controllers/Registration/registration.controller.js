@@ -866,7 +866,7 @@ const getUserDashboard = asyncHandler(async (req, res) => {
 const addSkills = asyncHandler(async (req, res) => {
   try {
     const userid = req.user.id;
-    const skills = req.body.skills;
+    const { skills } = req.body;
 
     console.log(skills);
     if (!skills) {
