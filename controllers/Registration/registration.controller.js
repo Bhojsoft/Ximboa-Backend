@@ -868,12 +868,15 @@ const addSkills = asyncHandler(async (req, res) => {
     const userid = req.user.id;
     const skills = req.body.skills;
 
-    console.log(skills)
-
-    const updateSkills = await registration.findByIdAndUpdate(userid, {
-      skills: skills,
-    });
-    res.status(200).json(new ApiResponse(200, "Skill Added", updateSkills));
+    console.log(skills);
+    if (!skills) {
+      res.status(400).json(new ApiError(400, "Skills are required"));
+    } else {
+      const updateSkills = await registration.findByIdAndUpdate(userid, {
+        skills: skills,
+      });
+      res.status(200).json(new ApiResponse(200, "Skill Added", updateSkills));
+    }
   } catch (error) {
     res
       .status(500)
