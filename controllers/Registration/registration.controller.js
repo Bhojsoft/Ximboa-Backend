@@ -90,6 +90,7 @@ const userRegistration = asyncHandler(async (req, res) => {
 // POST route to validate user login ----------------------------------------------------------------
 
 const { generateToken } = require("../../utils/tokenHelper"); // Token generation helper
+const registration = require("../../model/registration");
 
 const loginController = async (req, res) => {
   try {
@@ -862,6 +863,22 @@ const getUserDashboard = asyncHandler(async (req, res) => {
   }
 });
 
+const addSkills = asyncHandler(async (req, res) => {
+  try {
+    const userid = req.user.id;
+    const skills = req.body.skills;
+
+    const updateSkills = await registration.findByIdAndUpdate(userid, {
+      skills: skills,
+    });
+    res.status(200).json(new ApiResponse(200, "Skill Added", skills));
+  } catch (error) {
+    res
+      .status(500)
+      .json(new ApiError(500, error.message || "server error", error));
+  }
+});
+
 module.exports = {
   userRegistration,
   loginController,
@@ -872,4 +889,5 @@ module.exports = {
   approveRoleChange,
   getAllRequestsByAdminId,
   getUserDashboard,
+  addSkills,
 };

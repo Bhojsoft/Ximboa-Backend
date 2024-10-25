@@ -15,6 +15,7 @@ const {
   getAllRequestsByAdminId,
   // requestToBecomeTrainer,
   resetPassword,
+  addSkills,
 } = require("../../controllers/Registration/registration.controller");
 const { formatDate } = require("../../services/servise");
 
@@ -358,6 +359,13 @@ router.get(
   "/all-rolechange-request",
   jwtAuthMiddleware,
   getAllRequestsByAdminId
+);
+
+
+router.post(
+  "/addskills",
+  jwtAuthMiddleware,
+  addSkills
 );
 
 // POST route to initiate password reset
