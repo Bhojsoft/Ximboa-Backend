@@ -1,4 +1,6 @@
+const InstituteDummyModel = require("../../model/InstituteDummy/InstituteDummy.model");
 const InstituteDummy = require("../../model/InstituteDummy/InstituteDummy.model");
+const registration = require("../../model/registration");
 const { ApiError } = require("../../utils/ApiError");
 
 // Bulk insert controller for institutes
@@ -114,9 +116,75 @@ const getInstitutes = async (req, res) => {
   }
 };
 
+// Add Trainer to the Institute
+const addTrainer = async (req, res) => {
+  try {
+    const { instituteId, trainerId } = req.body;
+
+    // Check if the trainer exists
+    const trainer = await registration.findById(trainerId);
+    if (!trainer) {
+      return res.status(404).json({ message: "Trainer not found" });
+    }
+
+    // Add trainer to the institute
+    const institute = await InstituteDummyModel.findByIdAndUpdate(
+      instituteId,
+      { $addToSet: { trainers: trainerId } },
+      { new: true }
+    );
+
+    if (!institute) {
+      return res.status(404).json({ message: "Institute not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Trainer added successfully", institute });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error adding trainer", error: error.message });
+  }
+};
+
+// Add Admin to the Institute
+const addAdmin = async (req, res) => {
+  try {
+    const { instituteId, adminId } = req.body;
+
+    // Check if the admin exists
+    const admin = await registration.findById(adminId);
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    // Add admin to the institute
+    const institute = await InstituteDummyModel.findByIdAndUpdate(
+      instituteId,
+      { $addToSet: { admins: adminId } }, // $addToSet prevents duplicate entries
+      { new: true } // Return the updated document
+    );
+
+    if (!institute) {
+      return res.status(404).json({ message: "Institute not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Admin added successfully", institute });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error adding admin", error: error.message });
+  }
+};
+
 module.exports = {
   upload1,
   bulkInsertInstitutes,
   bulkInsertInstitutesFromExcel,
   getInstitutes,
+  addTrainer,
+  addAdmin,
 };

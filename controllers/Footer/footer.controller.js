@@ -42,7 +42,7 @@ const Product = require("../../model/product");
 const Event = require("../../model/event");
 
 // Initialize cache (stdTTL is the time-to-live for cached items in seconds)
-const cache = new NodeCache({ stdTTL: 600, checkperiod: 120 }); // Cache for 10 minutes
+const cache = new NodeCache({ stdTTL: 600, checkperiod: 120 });
 
 const Footer = asyncHandler(async (req, res) => {
   const cacheKey = "footerData";
@@ -72,16 +72,15 @@ const Footer = asyncHandler(async (req, res) => {
 
 // Function to fetch data from the database
 const fetchFooterData = async () => {
-  const [courses, Category = categories, trainers, products, events] =
-    await Promise.all([
-      Course.find().select("course_name").lean(),
-      Categories.find().select("category_name").lean(),
-      registration
-        .find({ role: { $in: ["TRAINER", "SELF_TRAINER"] } }, "f_Name l_Name")
-        .lean(),
-      Product.find().select("product_name").lean(),
-      Event.find().select("event_name").lean(),
-    ]);
+  const [courses, Category, trainers, products, events] = await Promise.all([
+    Course.find().select("course_name").lean(),
+    Categories.find().select("category_name").lean(),
+    registration
+      .find({ role: { $in: ["TRAINER", "SELF_TRAINER"] } }, "f_Name l_Name")
+      .lean(),
+    Product.find().select("product_name").lean(),
+    Event.find().select("event_name").lean(),
+  ]);
 
   return { Category, courses, trainers, products, events };
 };

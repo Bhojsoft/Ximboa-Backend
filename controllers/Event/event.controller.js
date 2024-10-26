@@ -3,9 +3,10 @@ const { ApiError } = require("../../utils/ApiError");
 const { default: mongoose } = require("mongoose");
 const { ApiResponse } = require("../../utils/ApiResponse");
 const { getRoleOrInstitute } = require("../../utils/helper");
+const { asyncHandler } = require("../../utils/asyncHandler");
 
 // Get events filtered by multiple categories (using category_name and handling special characters)
-const getEventsByFilter = async (req, res) => {
+const getEventsByFilter = asyncHandler(async (req, res) => {
   try {
     const { categories } = req.query;
     const page = parseInt(req.query.page) || 1;
@@ -88,7 +89,7 @@ const getEventsByFilter = async (req, res) => {
       res.status(500).json(new ApiError(500, "Server Error", error));
     }
   }
-};
+});
 
 module.exports = {
   getEventsByFilter,

@@ -11,6 +11,7 @@ const SocialMedia = require("../../../model/socialMedia");
 const testemonial = require("../../../model/testemonial");
 const gallary = require("../../../model/gallary");
 const { ApiError } = require("../../../utils/ApiError");
+const InstituteDummyModel = require("../../../model/InstituteDummy/InstituteDummy.model");
 const InstituteModel = require("../../../model/Institute/Institute.model");
 const { default: mongoose } = require("mongoose");
 
@@ -28,7 +29,9 @@ router.get("/:id", async (req, res) => {
       return res.status(404).send({ message: "Trainer not found" });
     }
 
-    const institutes = await InstituteModel.findOne({ trainers: trainerId });
+    const institutes = await InstituteDummyModel.findOne({
+      trainers: trainerId,
+    });
 
     const baseUrl = req.protocol + "://" + req.get("host");
 
@@ -287,15 +290,22 @@ router.get("/:id", async (req, res) => {
 
     res.status(200).json({
       gallarys: gallarys || "",
-      Business_Name: trainer?.business_Name
-        ? trainer?.business_Name
-        : trainer?.f_Name + " " + trainer?.l_Name,
+      Business_Name: institutes
+        ? institutes?.institute_name
+        : `${trainer?.f_Name} `,
       trainer,
       skills: trainer?.skills || "",
-      About: institutes ? institutes.About : About,
+      About: institutes ? institutes.About : About || "",
       Educations,
       testimonials,
-      SocialMedias: institutes ? institutes?.SocialMedias : SocialMedias,
+      SocialMedias: institutes
+        ? {
+            Website: institutes?.website || "",
+            Email: institutes?.Email || "",
+            twitter: institutes?.twitter || "",
+            instagram: institutes?.instagram || "",
+          }
+        : SocialMedias || "",
       OnGoingBatches,
       UpcomingBatches,
       onlineEventsThumbnailUrl,

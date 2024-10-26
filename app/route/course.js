@@ -69,57 +69,57 @@ router.put(
 );
 
 // ========================= Update course/:id =============================
-// router.delete("/:id", async (req, res, next) => {
-//   try {
-//     const baseUrl = req.protocol + "://" + req.get("host");
-//     const data = await Course.deleteOne({ _id: req.params.id });
-//     if (!data.deletedCount) res.status(400).json({ msg: "Not Found" });
-//     else {
-//       res
-//         .status(200)
-//         .json({ msg: "Course data successfully deleted", result: data });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: error });
-//   }
-// });
-
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
-    const course = await Course.findById(req.params.id);
-
-    if (!course) {
-      return res.status(404).json(new ApiError(404, "Course not found"));
+    const baseUrl = req.protocol + "://" + req.get("host");
+    const data = await Course.deleteOne({ _id: req.params.id });
+    if (!data.deletedCount) res.status(400).json({ msg: "Not Found" });
+    else {
+      res
+        .status(200)
+        .json({ msg: "Course data successfully deleted", result: data });
     }
-
-    await Course.deleteOne({ _id: req.params.id });
-
-    const attendees = course.registered_users;
-
-    const notifications = attendees.map((attendee) => ({
-      recipient: attendee,
-      message: `The course "${course.course_name}" has been deleted.`,
-      notificationType: "COURSE_DELETE",
-      course: course._id,
-    }));
-    await notifications.save();
-
-    const notification = new NotificationModel({
-      recipient: req.user.id,
-      message: `Your course "${deletedCourse.course_name}" has been deleted successfully.`,
-      activityType: "COURSE_DELETE",
-      relatedId: deletedCourse._id,
-    });
-
-    await notification.save();
-
-    res.status(200).json({
-      message: "Course deleted successfully and notifications sent.",
-    });
   } catch (error) {
-    res.status(500).json(new ApiError(500, error.message || "Server Error"));
+    res.status(500).json({ error: error });
   }
 });
+
+// router.delete("/:id", async (req, res) => {
+//   try {
+//     const course = await Course.findById(req.params.id);
+
+//     if (!course) {
+//       return res.status(404).json(new ApiError(404, "Course not found"));
+//     }
+
+//     await Course.deleteOne({ _id: req.params.id });
+
+//     const attendees = course.registered_users;
+
+//     const notifications = attendees.map((attendee) => ({
+//       recipient: attendee,
+//       message: `The course "${course.course_name}" has been deleted.`,
+//       notificationType: "COURSE_DELETE",
+//       course: course._id,
+//     }));
+//     await notifications.save();
+
+//     const notification = new NotificationModel({
+//       recipient: req.user.id,
+//       message: `Your course "${deletedCourse.course_name}" has been deleted successfully.`,
+//       activityType: "COURSE_DELETE",
+//       relatedId: deletedCourse._id,
+//     });
+
+//     await notification.save();
+
+//     res.status(200).json({
+//       message: "Course deleted successfully and notifications sent.",
+//     });
+//   } catch (error) {
+//     res.status(500).json(new ApiError(500, error.message || "Server Error"));
+//   }
+// });
 
 router.get("/trainer", async (req, res) => {
   const trainerId = req.user.id;

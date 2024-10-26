@@ -12,6 +12,8 @@ const {
   bulkInsertInstitutesFromExcel,
   upload1,
   getInstitutes,
+  addTrainer,
+  addAdmin,
 } = require("../../../controllers/InstituteDummy/InstituteDummy.controller");
 
 router.get("/get-institutes", getAllInstitute);
@@ -22,6 +24,8 @@ router.post(
   upload.array("institute_photos", 5),
   createInstitute
 );
+router.post("/addtrainer", addTrainer);
+router.post("/addtrainer", addAdmin);
 
 router.put(
   "/update-institute/:instituteId",

@@ -4,8 +4,9 @@ const Product = require("../../model/product");
 const Enrollment = require("../../model/Student/Enrollment");
 const { ApiError } = require("../../utils/ApiError");
 const { ApiResponse } = require("../../utils/ApiResponse");
+const { asyncHandler } = require("../../utils/asyncHandler");
 
-exports.getDashboardCountsForUser = async (req, res) => {
+exports.getDashboardCountsForUser = asyncHandler(async (req, res) => {
   try {
     const userId = req.user.id;
     const userRole = req.user.role;
@@ -61,4 +62,4 @@ exports.getDashboardCountsForUser = async (req, res) => {
       .status(500)
       .json(new ApiError(500, "Error fetching dashboard data", error));
   }
-};
+});
