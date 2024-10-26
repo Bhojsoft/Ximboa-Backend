@@ -14,6 +14,7 @@ const { ApiError } = require("../../../utils/ApiError");
 const InstituteDummyModel = require("../../../model/InstituteDummy/InstituteDummy.model");
 const InstituteModel = require("../../../model/Institute/Institute.model");
 const { default: mongoose } = require("mongoose");
+const registration = require("../../../model/registration");
 
 router.get("/:id", async (req, res) => {
   try {
@@ -22,13 +23,23 @@ router.get("/:id", async (req, res) => {
     const startIndex = (page - 1) * limit;
 
     const trainerId = req.params.id;
-    const trainer = await Trainer.findById(trainerId).select(
+    let trainer;
+
+    let trainers = await InstituteDummyModel.findById(trainerId).select(
       "-password -resetPasswordExpires -resetPasswordToken -requested_Role"
     );
-    if (!trainer) {
-      return res.status(404).send({ message: "Trainer not found" });
+    if (!trainers) {
+      trainer = await registration.findById(trainerId);
+    } else {
+      trainer = {
+        _id: trainers._id || "",
+        business_Name: trainers?.institute_name || "",
+        address1: trainers?.location || "",
+        mobile_number: trainers?.Whatsapp_number || "",
+        whatsapp_no: trainers?.Whatsapp_number || "",
+        About: trainers?.About || "",
+      };
     }
-
     const institutes = await InstituteDummyModel.findOne({
       trainers: trainerId,
     });
@@ -290,12 +301,13 @@ router.get("/:id", async (req, res) => {
 
     res.status(200).json({
       gallarys: gallarys || "",
-      Business_Name: institutes
-        ? institutes?.institute_name
-        : `${trainer?.f_Name} `,
+      Business_Name: `${trainer?.business_Name}`,
       trainer,
-      skills: trainer?.skills || "",
-      About: institutes ? institutes.About : About || "",
+      skills:
+        trainer?.skills ||
+        trainers?.courses?.map((course) => course?.split("|"))[0] ||
+        "",
+      About: trainers ? [trainers].map((i) => i?.About) : About || "",
       Educations,
       testimonials,
       SocialMedias: institutes

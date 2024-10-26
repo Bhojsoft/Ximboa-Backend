@@ -325,6 +325,7 @@ router.get("/allcourses", async (req, res) => {
 });
 
 // ========================= All Trainers with pagination ====================================
+const InstituteDummyModel = require("../../../../model/InstituteDummy/InstituteDummy.model");
 
 router.get("/trainers", async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
@@ -371,7 +372,7 @@ router.get("/trainers", async (req, res) => {
           $sort: { createdAt: -1 },
         },
         { $skip: (pageNum - 1) * limitNum },
-        { $limit: limitNum },
+        { $limit: limitNum / 2 },
       ]).exec(),
       Trainer.countDocuments({
         role: { $in: ["TRAINER", "SELF_EXPERT"] },
@@ -382,7 +383,7 @@ router.get("/trainers", async (req, res) => {
     const trainersWithDetails = await Promise.all(
       trainers.map(async (trainer) => {
         const [institute, stcount] = await Promise.all([
-          InstituteModel.findOne({
+          InstituteDummyModel.findOne({
             trainers: trainer._id,
           })
             .select("institute_name social_Media")
@@ -420,9 +421,25 @@ router.get("/trainers", async (req, res) => {
       })
     );
 
+    const Inatitutes = await InstituteDummyModel.find()
+      .sort({ createdAt: -1 })
+      .limit(limit / 2);
+
+    const Institute = Inatitutes.map((insti) => ({
+      _id: insti._id,
+      Business_Name: insti?.institute_name || "",
+      role: "INSTITUTE",
+      flag: "INSTITUTE",
+      course_count: insti?.course?.length || "",
+      categories: insti?.training_type?.split("|") || "",
+      trainer_image: insti?.institute_image
+        ? `${baseUrl}/${insti?.institute_image?.replace(/\\/g, "/")}`
+        : `${baseUrl}/${"public/gallery-small-img.jpg".replace(/\\/g, "/")}`,
+    }));
+
     // Send the response with trainers and pagination details
     res.status(200).json({
-      trainers: trainersWithDetails,
+      trainers: [...Institute, ...trainersWithDetails],
       pagination: {
         currentPage: pageNum,
         totalPages: Math.ceil(totalTrainers / limitNum),
@@ -439,7 +456,6 @@ router.get("/trainers", async (req, res) => {
 });
 
 // ========================= course/:id ====================================
-
 router.get("/course/:id", async (req, res, next) => {
   try {
     const baseUrl = req.protocol + "://" + req.get("host");
