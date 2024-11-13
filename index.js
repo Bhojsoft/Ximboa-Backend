@@ -10,7 +10,7 @@ const port = process.env.PORT || 4000;
 
 app.use(cors());
 
-app.use("/api", router);
+app.use("/", router);
 
 conndb().then(() => {
   app.listen(port, () => {
