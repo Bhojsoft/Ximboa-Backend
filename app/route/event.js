@@ -40,7 +40,9 @@ router.post(
       const trainerid = req.user.id;
 
       // If file is uploaded, get file path from Multer
-      const event_thumbnail = req.file ? req.file.location : "";
+      const event_thumbnail = req.file
+        ? req.file.location
+        : "https://ximboatest.s3.us-east-1.amazonaws.com/events/default/event_dummy.jpg";
       // console.log(event_thumbnail);
 
       const newEvent = new Event({

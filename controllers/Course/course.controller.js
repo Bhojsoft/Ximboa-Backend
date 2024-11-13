@@ -212,7 +212,7 @@ const postCourse = asyncHandler(async (req, res) => {
     course_information: req.body.course_information,
     thumbnail_image: req.files["thumbnail_image"]
       ? req.files["thumbnail_image"][0].location
-      : "public/ximboa_default.jpg",
+      : "https://ximboatest.s3.us-east-1.amazonaws.com/courses/default/courses_dummy.jpg",
     gallary_image: req.files["gallary_image"]
       ? req.files["gallary_image"][0].path
       : "",

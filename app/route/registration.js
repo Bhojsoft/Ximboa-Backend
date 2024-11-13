@@ -24,28 +24,28 @@ const {
 const { uploadProfileImage } = require("../../config/upload.config");
 
 // Multer configuration for file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./public/uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "./public/uploads/");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + "-" + file.originalname);
+//   },
+// });
 
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-    cb(null, true);
-  } else {
-    cb(new Error("Unsupported file type"), false);
-  }
-};
+// const fileFilter = (req, file, cb) => {
+//   if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+//     cb(null, true);
+//   } else {
+//     cb(new Error("Unsupported file type"), false);
+//   }
+// };
 
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 },
-  fileFilter: fileFilter,
-});
+// const upload = multer({
+//   storage: storage,
+//   limits: { fileSize: 1024 * 1024 * 5 },
+//   fileFilter: fileFilter,
+// });
 
 router.post(
   "/",
@@ -82,7 +82,9 @@ router.post(
       password,
       isTrainer,
       mobile_number,
-      trainer_image,
+      trainer_image: trainer_image
+        ? trainer_image
+        : "https://ximboatest.s3.us-east-1.amazonaws.com/users/default/profile.png",
       date_of_birth,
       whatsapp_no,
       rating_count,
@@ -229,7 +231,9 @@ router.put(
         pincode,
       } = req.body;
 
-      const trainer_image = req.file ? req.file.location : undefined;
+      const trainer_image = req.file
+        ? req.file.location
+        : "https://ximboatest.s3.us-east-1.amazonaws.com/users/default/profile.png";
 
       if (!user) {
         return res.status(404).json(new ApiError(404, "User not found"));

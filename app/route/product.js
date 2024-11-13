@@ -57,7 +57,7 @@ router.post(
         product_flag: req.body.product_flag,
         product_image: req.files["product_image"]
           ? req.files["product_image"][0].location
-          : "public/ximboa_default.jpg",
+          : "https://ximboatest.s3.us-east-1.amazonaws.com/products/default/ximboa_default.jpg",
         product_gallary: req.files["product_gallary"]
           ? req.files["product_gallary"][0].path
           : "",
