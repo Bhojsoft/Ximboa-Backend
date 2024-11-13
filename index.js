@@ -9,6 +9,13 @@ const cors = require("cors");
 const port = process.env.PORT || 4000;
 
 app.use(cors());
+app.use(
+  cors({
+    origin: "ximboa.com",
+    methods: "GET, POST, PUT, DELETE",
+    credentials: true,
+  })
+);
 
 app.use("/api", router);
 
