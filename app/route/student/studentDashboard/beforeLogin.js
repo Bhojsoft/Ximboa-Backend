@@ -136,9 +136,7 @@ router.get("/home", async (req, res) => {
       _id: category._id,
       category_name: category.category_name,
       Sub_title: category.sub_title,
-      category_image: category.category_image
-        ? `${baseUrl}/${category.category_image.replace(/\\/g, "/")}`
-        : "",
+      category_image: category.category_image || "",
     }));
 
     const trainersWithFullImageUrl = await Promise.all(
@@ -219,9 +217,7 @@ router.get("/allcategory", async (req, res) => {
         _id: category._id,
         category_name: category?.category_name,
         Sub_title: category?.sub_title,
-        category_image: category?.category_image
-          ? `${baseUrl}/${category?.category_image?.replace(/\\/g, "/")}`
-          : "",
+        category_image: category?.category_image || "",
         __v: category.__v,
         trainer_id: category.trainer_id,
       };

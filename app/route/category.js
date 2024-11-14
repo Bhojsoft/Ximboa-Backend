@@ -176,7 +176,7 @@ router.post(
 router.put(
   "/update/:id",
   jwtAuthMiddleware,
-  upload.single("category_image"),
+  uploadCategoryImage.single("category_image"),
   categoryController.updatedCategory
 );
 
