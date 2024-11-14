@@ -7,7 +7,7 @@ const { asyncHandler } = require("../../utils/asyncHandler");
 exports.addCategory = asyncHandler(async (req, res) => {
   try {
     const { category_name, sub_title } = req.body;
-    const category_image = req.file ? req.file.path : ""; // Access the uploaded file
+    const category_image = req.file ? req.file.location : ""; // Access the uploaded file
 
     const trainer_id = req.user.id;
 

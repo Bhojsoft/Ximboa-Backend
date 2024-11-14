@@ -10,6 +10,7 @@ const categoryController = require("../../controllers/Category/category.controll
 const { jwtAuthMiddleware } = require("../../middleware/auth");
 const upload = require("../../middleware/multerConfig");
 const { ApiResponse } = require("../../utils/ApiResponse");
+const { uploadCategoryImage } = require("../../config/upload.config");
 
 // // Multer configuration for file uploads
 // const storage = multer.diskStorage({
@@ -168,7 +169,7 @@ router.delete("/:id", async (req, res, next) => {
 router.post(
   "/",
   jwtAuthMiddleware,
-  upload.single("category_image"),
+  uploadCategoryImage.single("category_image"),
   categoryController.addCategory
 );
 
