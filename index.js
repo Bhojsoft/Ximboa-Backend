@@ -11,7 +11,7 @@ const port = process.env.PORT || 4000;
 app.use(cors());
 app.use(
   cors({
-    origin: "https://ximboa.com",
+    origin: "http://ximboa.com",
     methods: "GET, POST, PUT, DELETE",
     credentials: true,
   })
