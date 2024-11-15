@@ -7,6 +7,7 @@ const { asyncHandler } = require("../../utils/asyncHandler");
 const registration = require("../../model/registration");
 const NotificationModel = require("../../model/Notifications/Notification.model");
 const InstituteModel = require("../../model/Institute/Institute.model");
+const course = require("../../model/course");
 
 const getCourses = asyncHandler(async (req, res, next) => {
   try {
@@ -131,29 +132,34 @@ const getCourseById = asyncHandler(async (req, res, next) => {
 
 const updateCourseById = asyncHandler(async (req, res) => {
   const courseId = req.params.id;
+  const existingCourse = await course.findById(courseId);
+  if (!existingCourse) {
+    return res.status(400).json({ msg: "Course not found" });
+  }
+
   const updateData = {
-    course_name: req.body.course_name,
-    online_offline: req.body.online_offline,
-    price: req.body.price,
-    offer_prize: req.body.offer_prize,
-    start_date: req.body.start_date,
-    end_date: req.body.end_date,
-    start_time: req.body.start_time,
-    end_time: req.body.end_time,
-    tags: req.body.tags,
-    course_brief_info: req.body.course_brief_info,
-    course_information: req.body.course_information,
+    course_name: req.body.course_name||existingCourse.course_name,
+    online_offline: req.body.online_offline||existingCourse.online_offline,
+    price: req.body.price||existingCourse.price,
+    offer_prize: req.body.offer_prize||existingCourse.offer_prize,
+    start_date: req.body.start_date||existingCourse.start_date,
+    end_date: req.body.end_date||existingCourse.end_date,
+    start_time: req.body.start_time||existingCourse.start_time,
+    end_time: req.body.end_time||existingCourse.end_time,
+    tags: req.body.tags||existingCourse.tags,
+    course_brief_info: req.body.course_brief_info||existingCourse.course_brief_info,
+    course_information: req.body.course_information||existingCourse.course_information,
     thumbnail_image: req.files["thumbnail_image"]
       ? req?.files["thumbnail_image"][0]?.location
-      : "",
+      :existingCourse.thumbnail_image,
     gallary_image: req.files["gallary_image"]
       ? req.files["gallary_image"][0].path
-      : "",
+      : existingCourse.gallary_image,
     trainer_materialImage: req.files["trainer_materialImage"]
       ? req.files["trainer_materialImage"][0].path
-      : "",
-    category_id: req.body.category_id,
-    trainer_id: req.user.id,
+      : existingCourse.trainer_materialImage,
+    category_id: req.body.category_id||existingCourse.category_id,
+    trainer_id: req.user.id||existingCourse.trainer_id,
   };
 
   try {
