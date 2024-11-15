@@ -95,7 +95,7 @@ const emailTemplates = {
           style="width: 100%; display: inline-block;"/>
         </div>
         <div class="header-text" style="float:right;width:50%;text-align:end;padding-top:13px">
-          <p class="subject" style="font-size: 16px;margin:0px">Subject: Course Inquiry</p>
+          <p class="subject" style="font-size: 16px;margin:0px">Subject: Login Successful</p>
           <p class="email" style="color: #265bbd;margin:0px">
             Received from:
             <a
@@ -114,21 +114,7 @@ const emailTemplates = {
       />
 
       <!-- Content Section -->
-      <div style="text-align:end;margin-top:20px;">
-      <button
-            class="btn-primary"
-            style="
-              background-color: #265bbd;
-              color: white;
-              padding: 10px 20px;
-              border: none;
-              border-radius: 10px;
-              cursor: pointer;
-              width: 100%;
-              max-width: 200px;">
-            Sign Up for It’s Free
-          </button>
-      </div>
+     
         <div style="margin-top: 8px">
           <p
             style="
@@ -145,8 +131,8 @@ const emailTemplates = {
         <div
           class="message-section"
           style="margin-bottom: 20px; line-height: 1.5">
-          <p>Hi Instructor/Institute ${name},</p>
-          <p>You have received a new inquiry regarding [Course Name].</p>
+          <p>Hi  ${name},</p>
+          <p>We’re happy to inform you that you’ve successfully logged into your account.</p>
         </div>
 
         <!-- Table Section -->
@@ -180,7 +166,7 @@ const emailTemplates = {
                     font-size: 14px;
                   "
                 >
-                  Amit Bhoj
+                  ${name}
                 </td>
               </tr>
               <tr>
@@ -205,29 +191,7 @@ const emailTemplates = {
                   <a href="" style="color: #265bbd">contact@ximboa.io</a>
                 </td>
               </tr>
-              <tr>
-                <td
-                  style="
-                    padding: 10px;
-                    border: 1px solid #ddd;
-                    text-align: left;
-                    font-size: 14px;
-                  "
-                >
-                  Subject
-                </td>
-                <td
-                  style="
-                    padding: 10px;
-                    border: 1px solid #ddd;
-                    text-align: left;
-                    font-size: 14px;
-                  "
-                >
-                  Course Inquiry
-                </td>
-              </tr>
-              <tr>
+             
                 <td
                   style="
                     padding: 10px;
@@ -246,7 +210,7 @@ const emailTemplates = {
                     font-size: 14px;
                   "
                 >
-                  When will the batch start?
+                Login Successful!
                 </td>
               </tr>
             </tbody>
@@ -255,7 +219,7 @@ const emailTemplates = {
 
         <!-- Dashboard Section -->
         <p style="font-size: 14px; line-height: 1.5">
-          To see your inquiries from one single place, visit your dashboard.
+         If this was not you, please secure your account immediately.
         </p>
         <button
           class="btn-primary dashboard-btn"
@@ -299,6 +263,7 @@ const emailTemplates = {
             width: 100%;
             max-width: 150px;
             text-align: center;
+            margin-top:10px;
           "
           >www.ximboa.io</a
         >
@@ -311,7 +276,7 @@ const emailTemplates = {
             flex-direction: row;
             width: 100%;
             max-width: 250px;
-            margin-top: 10px;
+            margin-top:10px;
             gap: 10px;
           "
         >
@@ -319,62 +284,41 @@ const emailTemplates = {
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-facebook-f"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/facebook.png"  alt="facebook">
+
+</a>
           <a
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
-              text-align: center;
-              padding: 5px;
+              text-align: center; 
+              margin:0 3px;          
             "
-            ><i class="fab fa-twitter"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/twitter.png"  alt="twiter"></a>
           <a
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-instagram"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/instagram.png"  alt="instagram"></a>
+        
           <a
-            href="#"
+            href="https://www.youtube.com/watch?v=XTKz5D8P0MI"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a
-            href="#"
-            class="icon-border"
-            style="
-              border: 1px solid white;
-              border-radius: 50%;
-              color: white;
-              text-align: center;
-              padding: 5px;
-            "
-            ><i class="fab fa-youtube"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/YOUTUBE.png"  alt="youtube"></a>
         </div>
         <a
           href="mailto:contact@ximboa.io"
@@ -385,6 +329,7 @@ const emailTemplates = {
             width: 100%;
             max-width: 200px;
             text-align: center;
+             margin-top:10px;
           "
           >contact@ximboa.io</a
         >
@@ -663,6 +608,7 @@ const emailTemplates = {
             width: 100%;
             max-width: 150px;
             text-align: center;
+              margin-top:10px;
           "
           >www.ximboa.io</a
         >
@@ -675,7 +621,7 @@ const emailTemplates = {
             flex-direction: row;
             width: 100%;
             max-width: 250px;
-            margin-top: 10px;
+          margin-top:10px;
             gap: 10px;
           "
         >
@@ -683,62 +629,41 @@ const emailTemplates = {
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-facebook-f"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/facebook.png"  alt="facebook">
+
+</a>
           <a
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
-              text-align: center;
-              padding: 5px;
+              text-align: center; 
+              margin:0 3px;          
             "
-            ><i class="fab fa-twitter"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/twitter.png"  alt="twiter"></a>
           <a
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-instagram"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/instagram.png"  alt="instagram"></a>
+        
           <a
-            href="#"
+            href="https://www.youtube.com/watch?v=XTKz5D8P0MI"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a
-            href="#"
-            class="icon-border"
-            style="
-              border: 1px solid white;
-              border-radius: 50%;
-              color: white;
-              text-align: center;
-              padding: 5px;
-            "
-            ><i class="fab fa-youtube"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/YOUTUBE.png"  alt="youtube"></a>
         </div>
         <a
           href="mailto:contact@ximboa.io"
@@ -749,6 +674,7 @@ const emailTemplates = {
             width: 100%;
             max-width: 200px;
             text-align: center;
+              margin-top:10px;
           "
           >contact@ximboa.io</a
         >
@@ -927,10 +853,11 @@ const emailTemplates = {
             width: 100%;
             max-width: 150px;
             text-align: center;
+             margin-top:10px;
           "
           >www.ximboa.io</a
         >
-        <div
+       <div
           class="social-icons"
           style="
             display: flex;
@@ -939,7 +866,7 @@ const emailTemplates = {
             flex-direction: row;
             width: 100%;
             max-width: 250px;
-            margin-top: 10px;
+            margin-top:10px;
             gap: 10px;
           "
         >
@@ -947,62 +874,41 @@ const emailTemplates = {
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-facebook-f"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/facebook.png"  alt="facebook">
+
+</a>
           <a
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
-              text-align: center;
-              padding: 5px;
+              text-align: center; 
+              margin:0 3px;          
             "
-            ><i class="fab fa-twitter"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/twitter.png"  alt="twiter"></a>
           <a
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-instagram"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/instagram.png"  alt="instagram"></a>
+        
           <a
-            href="#"
+            href="https://www.youtube.com/watch?v=XTKz5D8P0MI"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a
-            href="#"
-            class="icon-border"
-            style="
-              border: 1px solid white;
-              border-radius: 50%;
-              color: white;
-              text-align: center;
-              padding: 5px;
-            "
-            ><i class="fab fa-youtube"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/YOUTUBE.png"  alt="youtube"></a>
         </div>
         <a
           href="mailto:contact@ximboa.io"
@@ -1013,6 +919,7 @@ const emailTemplates = {
             width: 100%;
             max-width: 200px;
             text-align: center;
+            margin-top:10px;
           "
           >contact@ximboa.io</a
         >
@@ -1197,79 +1104,63 @@ const emailTemplates = {
                   width: 100%;
                   max-width: 150px;
                   text-align: center;
+                   margin-top:10px;
                 "
                 >www.ximboa.io</a>
 
               <div
-                class="social-icons"
-                style="
-                  display: flex;
-                  justify-content: center;
-                  font-size: 12px;
-                  flex-direction: row;
-                  width: 100%;
-                  max-width: 250px;
-                  margin-top: 10px;
-                  gap: 10px;
-                "
-              >
-                <a
-                  href="#"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-                <a
-                  href="#"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;">
-                  <i class="fab fa-twitter"></i>
-                </a>
-                <a
-                  href="#"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;">
-                  <i class="fab fa-instagram"></i>
-                </a>
-                <a
-                  href="#"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;">
-                  <i class="fab fa-linkedin-in"></i>
-                </a>
-                <a
-                  href="www.ximboa.io"
-                  target="_blank" 
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;">
-                  <i class="fab fa-youtube"></i>
-                </a>
-              </div>
+          class="social-icons"
+          style="
+            display: flex;
+            justify-content: center;
+            font-size: 12px;
+            flex-direction: row;
+            width: 100%;
+            max-width: 250px;
+          margin-top:10px;
+            gap: 10px;
+          "
+        >
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center;
+              margin:0 3px;
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/facebook.png"  alt="facebook">
+
+</a>
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center; 
+              margin:0 3px;          
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/twitter.png"  alt="twiter"></a>
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center;
+              margin:0 3px;
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/instagram.png"  alt="instagram"></a>
+        
+          <a
+            href="https://www.youtube.com/watch?v=XTKz5D8P0MI"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center;
+              margin:0 3px;
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/YOUTUBE.png"  alt="youtube"></a>
+        </div>
               <a
                 href="mailto:contact@ximboa.io"
                 class="footer-link"
@@ -1278,6 +1169,7 @@ const emailTemplates = {
                   text-decoration: none;
                   width: 100%;
                   max-width: 200px;
+                  margin-top:10px;
                   text-align: center;">
                 contact@ximboa.io
               </a>
@@ -1455,10 +1347,11 @@ const emailTemplates = {
             width: 100%;
             max-width: 150px;
             text-align: center;
+             margin-top:10px;
           "
           >www.ximboa.io</a
         >
-        <div
+       <div
           class="social-icons"
           style="
             display: flex;
@@ -1467,7 +1360,7 @@ const emailTemplates = {
             flex-direction: row;
             width: 100%;
             max-width: 250px;
-            margin-top: 10px;
+           margin-top:10px;
             gap: 10px;
           "
         >
@@ -1475,62 +1368,41 @@ const emailTemplates = {
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-facebook-f"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/facebook.png"  alt="facebook">
+
+</a>
           <a
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
-              text-align: center;
-              padding: 5px;
+              text-align: center; 
+              margin:0 3px;          
             "
-            ><i class="fab fa-twitter"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/twitter.png"  alt="twiter"></a>
           <a
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-instagram"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/instagram.png"  alt="instagram"></a>
+        
           <a
-            href="#"
+            href="https://www.youtube.com/watch?v=XTKz5D8P0MI"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a
-            href="#"
-            class="icon-border"
-            style="
-              border: 1px solid white;
-              border-radius: 50%;
-              color: white;
-              text-align: center;
-              padding: 5px;
-            "
-            ><i class="fab fa-youtube"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/YOUTUBE.png"  alt="youtube"></a>
         </div>
         <a
           href="mailto:contact@ximboa.io"
@@ -1541,6 +1413,7 @@ const emailTemplates = {
             width: 100%;
             max-width: 200px;
             text-align: center;
+             margin-top: 15px;
           "
           >contact@ximboa.io</a
         >
@@ -1821,6 +1694,7 @@ const emailTemplates = {
             width: 100%;
             max-width: 150px;
             text-align: center;
+              margin-top:10px;
           "
           >www.ximboa.io</a
         >
@@ -1833,7 +1707,7 @@ const emailTemplates = {
             flex-direction: row;
             width: 100%;
             max-width: 250px;
-            margin-top: 10px;
+            margin-top:10px;
             gap: 10px;
           "
         >
@@ -1841,62 +1715,41 @@ const emailTemplates = {
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-facebook-f"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/facebook.png"  alt="facebook">
+
+</a>
           <a
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
-              text-align: center;
-              padding: 5px;
+              text-align: center; 
+              margin:0 3px;          
             "
-            ><i class="fab fa-twitter"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/twitter.png"  alt="twiter"></a>
           <a
             href="#"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-instagram"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/instagram.png"  alt="instagram"></a>
+        
           <a
-            href="#"
+            href="https://www.youtube.com/watch?v=XTKz5D8P0MI"
             class="icon-border"
             style="
-              border: 1px solid white;
-              border-radius: 50%;
               color: white;
               text-align: center;
-              padding: 5px;
+              margin:0 3px;
             "
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a
-            href="#"
-            class="icon-border"
-            style="
-              border: 1px solid white;
-              border-radius: 50%;
-              color: white;
-              text-align: center;
-              padding: 5px;
-            "
-            ><i class="fab fa-youtube"></i
-          ></a>
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/YOUTUBE.png"  alt="youtube"></a>
         </div>
         <a
           href="mailto:contact@ximboa.io"
@@ -1907,6 +1760,7 @@ const emailTemplates = {
             width: 100%;
             max-width: 200px;
             text-align: center;
+             margin-top:10px;
           "
           >contact@ximboa.io</a
         >
@@ -2288,83 +2142,63 @@ const emailTemplates = {
                   width: 100%;
                   max-width: 150px;
                   text-align: center;
+                  margin-top:10px;
                 "
                 >www.ximboa.io</a
               >
-              <div
-                class="social-icons"
-                style="
-                  display: flex;
-                  justify-content: center;
-                  font-size: 12px;
-                  flex-direction: row;
-                  width: 100%;
-                  max-width: 250px;
-                  margin-top: 10px;
-                  gap: 10px;
-                "
-              >
-                <a
-                  href="#"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;
-                  "
-                  ><i class="fab fa-facebook-f"></i
-                ></a>
-                <a
-                  href="#"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;
-                  "
-                  ><i class="fab fa-twitter"></i
-                ></a>
-                <a
-                  href="#"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;
-                  "
-                  ><i class="fab fa-instagram"></i
-                ></a>
-                <a
-                  href="#"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;
-                  "
-                  ><i class="fab fa-linkedin-in"></i
-                ></a>
-                <a
-                  href="#"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;
-                  "
-                  ><i class="fab fa-youtube"></i
-                ></a>
-              </div>
+             <div
+          class="social-icons"
+          style="
+            display: flex;
+            justify-content: center;
+            font-size: 12px;
+            flex-direction: row;
+            width: 100%;
+            max-width: 250px;
+             margin-top:10px;
+            gap: 10px;
+          "
+        >
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center;
+              margin:0 3px;
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/facebook.png"  alt="facebook">
+
+</a>
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center; 
+              margin:0 3px;          
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/twitter.png"  alt="twiter"></a>
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center;
+              margin:0 3px;
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/instagram.png"  alt="instagram"></a>
+        
+          <a
+            href="https://www.youtube.com/watch?v=XTKz5D8P0MI"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center;
+              margin:0 3px;
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/YOUTUBE.png"  alt="youtube"></a>
+        </div>
               <a
                 href="mailto:contact@ximboa.io"
                 class="footer-link"
@@ -2374,6 +2208,7 @@ const emailTemplates = {
                   width: 100%;
                   max-width: 200px;
                   text-align: center;
+                  margin-top:10px;
                 "
                 >contact@ximboa.io</a
               >
@@ -2545,88 +2380,63 @@ const emailTemplates = {
                   width: 100%;
                   max-width: 150px;
                   text-align: center;
+                  margin-top:10px;
                 "
                 >www.ximboa.io</a
               >
-              <div
-                class="social-icons"
-                style="
-                  display: flex;
-                  justify-content: center;
-                  font-size: 12px;
-                  flex-direction: row;
-                  width: 100%;
-                  max-width: 250px;
-                  margin-top: 10px;
-                  gap: 10px;
-                "
-              >
-                <a
-                  href="#"
-                  class="icon-border"
-                  target="_blank"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;
-                  "
-                  ><i class="fab fa-facebook-f"></i
-                ></a>
-                <a
-                  href="#"
-                  class="icon-border"
-                  target="_blank"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;
-                  "
-                  ><i class="fab fa-twitter"></i
-                ></a>
-                <a
-                  href="#"
-                  target="_blank"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;
-                  "
-                  ><i class="fab fa-instagram"></i
-                ></a>
-                <a
-                  href="#"
-                  target="_blank"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;
-                  "
-                  ><i class="fab fa-linkedin-in"></i
-                ></a>
-                <a
-                  href="#"
-                  target="_blank"
-                  class="icon-border"
-                  style="
-                    border: 1px solid white;
-                    border-radius: 50%;
-                    color: white;
-                    text-align: center;
-                    padding: 5px;
-                  "
-                  ><i class="fab fa-youtube"></i
-                ></a>
-              </div>
+             <div
+          class="social-icons"
+          style="
+            display: flex;
+            justify-content: center;
+            font-size: 12px;
+            flex-direction: row;
+            width: 100%;
+            max-width: 250px;
+             margin-top:10px;
+            gap: 10px;
+          "
+        >
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center;
+              margin:0 3px;
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/facebook.png"  alt="facebook">
+
+</a>
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center; 
+              margin:0 3px;          
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/twitter.png"  alt="twiter"></a>
+          <a
+            href="#"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center;
+              margin:0 3px;
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/instagram.png"  alt="instagram"></a>
+        
+          <a
+            href="https://www.youtube.com/watch?v=XTKz5D8P0MI"
+            class="icon-border"
+            style="
+              color: white;
+              text-align: center;
+              margin:0 3px;
+            "
+            ><img src="https://ximboatest.s3.us-east-1.amazonaws.com/social_media_icons/YOUTUBE.png"  alt="youtube"></a>
+        </div>
               <a
                 href="mailto:contact@ximboa.io"
                 class="footer-link"
@@ -2636,6 +2446,7 @@ const emailTemplates = {
                   width: 100%;
                   max-width: 200px;
                   text-align: center;
+                  margin-top:10px;
                 "
                 >contact@ximboa.io</a
               >
