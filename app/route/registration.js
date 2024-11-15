@@ -20,6 +20,7 @@ const {
   getRejectedRequestByAdminId,
   getApprovedRequestByAdminId,
   getPendingRequestByAdminId,
+  getUserById,
 } = require("../../controllers/Registration/registration.controller");
 const { uploadProfileImage } = require("../../config/upload.config");
 
@@ -392,5 +393,7 @@ router.post("/forget-password", forgetPassward);
 
 // Route to handle password reset requests
 router.post("/reset-password", resetPassword);
+
+router.get("/get-user-info/:userid", getUserById);
 
 module.exports = router;

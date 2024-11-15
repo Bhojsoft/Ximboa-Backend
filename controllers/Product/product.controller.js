@@ -44,7 +44,9 @@ const getProductsByFilter = asyncHandler(async (req, res) => {
             ? `${baseUrl}/${product.product_image.replace(/\\/g, "/")}`
             : "",
           products_category: product.categoryid?.category_name || "",
-          products_rating: averageRating || "No reviews",
+          products_rating: averageRating
+            ? averageRating?.toFixed(1)
+            : "No reviews",
           products_name: product.product_name || "",
           products_price: product.product_prize || "",
           products_selling_price: product.product_selling_prize || "",

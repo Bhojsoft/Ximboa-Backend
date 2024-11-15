@@ -8,7 +8,7 @@ const appointmentSchema = new Schema(
       ref: "Registration",
       required: true,
     },
-    u_id: {
+    user_id: {
       type: Schema.Types.ObjectId,
       ref: "Registration",
     }, // Assuming you have a User model

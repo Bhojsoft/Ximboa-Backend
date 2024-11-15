@@ -96,10 +96,7 @@ const getAllCartItems = async (req, res) => {
         quantity: item.quantity,
         productPrice: item.price,
         productTotalPrice: item.price * item.quantity,
-        productImage: `${baseUrl}/${item.productId.product_image.replace(
-          /\\/g,
-          "/"
-        )}`,
+        productImage: item.productId.product_image || "",
       })),
       totalPrice: cart.totalPrice,
     });

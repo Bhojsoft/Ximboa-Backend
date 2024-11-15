@@ -159,7 +159,9 @@ router.get("/home", async (req, res) => {
           role: trainer.role,
           flag: getRoleOrInstitute(trainer.role),
           course_count: trainer.course_count,
-          ratings: stcount[0]?.averageRating || "0",
+          ratings: stcount[0]?.averageRating
+            ? stcount[0]?.averageRating?.toFixed(1)
+            : "0",
           trainer_image: trainer.trainer_image,
         };
       })
@@ -179,7 +181,7 @@ router.get("/home", async (req, res) => {
     const eventDetails = events.map((event) => ({
       _id: event._id,
       eventImage: event.event_thumbnail,
-      eventDate: event.event_date || "",
+      eventDate: formatDate(event.event_date) || "",
       eventStartTime: event.event_start_time || "",
       eventEndTime: event.event_end_time || "",
       eventName: event.event_name || "",
@@ -268,7 +270,7 @@ router.get("/allcourses", async (req, res) => {
           : `${course?.trainer_id?.f_Name || ""} ${
               course?.trainer_id?.l_Name || ""
             }`.trim() || "",
-        course_rating: averageRating || "",
+        course_rating: averageRating ? averageRating?.toFixed(1) : "",
         course_duration: Math.floor(
           Math.round(
             ((course?.end_date - course?.start_date) /
@@ -305,6 +307,7 @@ router.get("/allcourses", async (req, res) => {
 // ========================= All Trainers with pagination ====================================
 const InstituteDummyModel = require("../../../../model/InstituteDummy/InstituteDummy.model");
 const { defaultCourseImage } = require("../../../../constants");
+const { formatDate } = require("../../../../services/servise");
 
 router.get("/trainers", async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
@@ -392,7 +395,9 @@ router.get("/trainers", async (req, res) => {
             (category) => category.category_name
           ),
           social_Media: institute ? institute.social_Media : "",
-          ratings: stcount[0]?.averageRating || "No ratings yet",
+          ratings: stcount[0]?.averageRating
+            ? stcount[0]?.averageRating?.toFixed(1)
+            : "No ratings yet",
           trainer_image: trainer.trainer_image,
         };
       })
@@ -456,8 +461,8 @@ router.get("/course/:id", async (req, res, next) => {
       category_name: course?.category_id?.category_name || "",
       online_offline: course?.online_offline || "",
       thumbnail_image: course?.thumbnail_image,
-      start_date: course?.start_date || "",
-      end_date: course?.end_date || "",
+      start_date: formatDate(course?.start_date) || "",
+      end_date: formatDate(course?.end_date) || "",
       start_time: course?.start_time || "",
       end_time: course?.end_time || "",
       business_Name: course?.trainer_id?.business_Name
@@ -467,7 +472,7 @@ router.get("/course/:id", async (req, res, next) => {
           }`.trim() || "",
       trainer_image: course?.trainer_id?.trainer_image,
       trainer_id: course?.trainer_id?._id,
-      course_rating: averageRating || "",
+      course_rating: averageRating ? averageRating?.toFixed(1) : "",
       tags: course?.tags?.split(" ").map((tag) => tag.trim()) || "",
       course_duration: Math.floor(
         Math.round(
@@ -515,7 +520,7 @@ router.get("/course/:id", async (req, res, next) => {
             : `${course?.trainer_id?.f_Name || ""} ${
                 course?.trainer_id?.l_Name || ""
               }`.trim() || "",
-          course_rating: averageRating || "",
+          course_rating: averageRating ? averageRating?.toFixed(1) : "",
           course_duration: Math.floor(
             Math.round(
               ((course?.end_date - course?.start_date) /
@@ -587,7 +592,7 @@ router.get("/event/:id", async (req, res) => {
         event_thumbnail: eventWithFullImageUrls?.event_thumbnail || "",
         event_info: eventWithFullImageUrls?.event_info || "",
         event_description: eventWithFullImageUrls?.event_description || "",
-        event_date: eventWithFullImageUrls?.event_date || "",
+        event_date: formatDate(eventWithFullImageUrls?.event_date) || "",
         event_start_time: eventWithFullImageUrls?.event_start_time || "",
         event_end_time: eventWithFullImageUrls?.event_end_time || "",
         event_name: eventWithFullImageUrls?.event_name || "",
@@ -610,7 +615,9 @@ router.get("/event/:id", async (req, res) => {
         social_media: institute?.social_Media
           ? institute?.social_Media
           : eventWithFullImageUrls?.trainerid?.social_Media || "",
-        trainier_rating: stcount[0]?.averageRating || "",
+        trainier_rating: stcount[0]?.averageRating
+          ? stcount[0]?.averageRating?.toFixed(1)
+          : "",
         total_course: courseCount || "",
       };
       if (!event) {
@@ -632,7 +639,7 @@ router.get("/event/:id", async (req, res) => {
       const relatedEvent = result.map((event) => ({
         _id: event?._id,
         event_name: event?.event_name || "",
-        event_date: event?.event_date || "",
+        event_date: formatDate(event?.event_date) || "",
         event_type: event?.event_type || "",
         event_category: event?.event_category?.category_name || "",
         event_flag: eventWithFullImageUrls?.trainerid?.role || "",
@@ -679,12 +686,12 @@ router.get("/allevents", async (req, res) => {
       const result = {
         _id: event?._id,
         event_name: event?.event_name || "",
-        event_date: event?.event_date || "",
+        event_date: formatDate(event?.event_date) || "",
         event_category: event?.event_category?.category_name || "",
         event_type: event?.event_type || "",
         event_flag: event?.trainerid?.role || "",
         trainer_id: event?.trainerid?._id || "",
-        event_rating: averageRating || "",
+        event_rating: averageRating ? averageRating?.toFixed(1) : "",
         registered_users: event?.registered_users?.length || "",
         event_thumbnail: event?.event_thumbnail,
       };
@@ -730,7 +737,7 @@ router.get("/product/:id", async function (req, res, next) {
     product_image: product?.product_image,
     products_info: product?.products_info || "",
     products_description: product?.products_description || "",
-    products_rating: averageRating || "",
+    products_rating: averageRating ? averageRating?.toFixed(1) : "",
     products_category: product?.categoryid?.category_name || "",
     products_name: product?.product_name || "",
     products_price: product?.product_prize || "",
@@ -775,7 +782,7 @@ router.get("/product/:id", async function (req, res, next) {
       _id: product?._id,
       product_image: product?.product_image,
       products_category: product?.categoryid?.category_name || "",
-      products_rating: averageRating || "",
+      products_rating: averageRating ? averageRating?.toFixed(1) : "",
       products_category: product?.categoryid?.category_name || "",
       products_name: product?.product_name || "",
       products_price: product?.product_prize || "",
@@ -825,7 +832,9 @@ router.get("/allproduct", async function (req, res, next) {
         _id: product._id,
         product_image: product.product_image,
         products_category: product.categoryid?.category_name || "",
-        products_rating: averageRating || "No reviews",
+        products_rating: averageRating
+          ? averageRating?.toFixed(1)
+          : "No reviews",
         products_name: product.product_name || "",
         products_price: product.product_prize || "",
         products_selling_price: product.product_selling_prize || "",

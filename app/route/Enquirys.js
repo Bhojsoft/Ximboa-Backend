@@ -14,6 +14,8 @@ router.post("/", async (req, res) => {
     const userid = req.user.id;
     const newEnquiry = new Enquiry({ trainerid, description, userid });
 
+    const result = await newEnquiry.save();
+
     const trainer_data = await registration
       .findById(trainerid)
       .select("email_id f_Name l_Name");
@@ -29,8 +31,8 @@ router.post("/", async (req, res) => {
     sendEmail(
       "newEnquiry",
       {
-        name: trainer_data.f_Name,
-        email: trainer_data.email_id,
+        name: trainer_data?.f_Name,
+        email: trainer_data?.email_id,
       },
       [trainerName, studentName, (studentEmail = user?.email_id), description]
     );
@@ -52,7 +54,7 @@ router.post("/", async (req, res) => {
     });
     await notification.save();
 
-    res.status(201).send(newEnquiry);
+    res.status(201).json(result);
   } catch (error) {
     console.log(error);
     res.status(400).send({ message: "Error creating enquiry", error });

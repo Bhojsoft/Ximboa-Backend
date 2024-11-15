@@ -58,7 +58,7 @@ router.get("/", jwtAuthMiddleware, async (req, res) => {
           : `${course?.trainer_id?.f_Name || ""} ${
               course?.trainer_id?.l_Name || ""
             }`.trim() || "",
-        course_rating: averageRating || "",
+        course_rating: averageRating ? averageRating?.toFixed(1) : "",
         course_duration: Math.floor(
           Math.round(
             ((course?.end_date - course?.start_date) /
@@ -95,7 +95,7 @@ router.get("/", jwtAuthMiddleware, async (req, res) => {
         _id: product?._id,
         product_image: product?.product_image,
         products_category: product?.categoryid?.category_name || "",
-        products_rating: averageRating || "",
+        products_rating: averageRating ? averageRating?.toFixed(1) : "",
         products_category: product?.categoryid?.category_name || "",
         products_name: product?.product_name || "",
         products_price: product?.product_prize || "",
@@ -127,7 +127,7 @@ router.get("/", jwtAuthMiddleware, async (req, res) => {
         event_category: event?.event_category?.category_name || "",
         event_type: event?.event_type || "",
         trainer_id: event?.trainerid?._id || "",
-        event_rating: averageRating || "",
+        event_rating: averageRating ? averageRating?.toFixed(1) : "",
         registered_users: event?.registered_users.length || "",
         event_thumbnail: event?.event_thumbnail,
       };
@@ -152,7 +152,7 @@ router.get("/", jwtAuthMiddleware, async (req, res) => {
         event_category: event?.event_category?.category_name || "",
         event_type: event?.event_type || "",
         trainer_id: event?.trainerid?._id || "",
-        event_rating: averageRating || "",
+        event_rating: averageRating ? averageRating?.toFixed(1) : "",
         registered_users: event?.registered_users.length || "",
         event_thumbnail: event?.event_thumbnail,
       };
@@ -176,7 +176,7 @@ router.get("/", jwtAuthMiddleware, async (req, res) => {
         event_category: event?.event_category?.category_name || "",
         event_type: event?.event_type || "",
         trainer_id: event?.trainerid?._id || "",
-        event_rating: averageRating || "",
+        event_rating: averageRating ? averageRating?.toFixed(1) : "",
         registered_users: event?.registered_users.length || "",
         event_thumbnail: event?.event_thumbnail,
       };

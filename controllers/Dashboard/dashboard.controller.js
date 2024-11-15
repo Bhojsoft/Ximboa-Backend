@@ -16,7 +16,7 @@ exports.getDashboardCountsForUser = asyncHandler(async (req, res) => {
 
     if (
       userRole === "TRAINER" ||
-      userRole === "SELF_TRAINER" ||
+      userRole === "SELF_EXPERT" ||
       userRole === "INSTITUTE"
     ) {
       const totalCourses = await Course.countDocuments({ trainer_id: userId });

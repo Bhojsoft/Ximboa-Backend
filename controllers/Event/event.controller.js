@@ -4,6 +4,7 @@ const { default: mongoose } = require("mongoose");
 const { ApiResponse } = require("../../utils/ApiResponse");
 const { getRoleOrInstitute } = require("../../utils/helper");
 const { asyncHandler } = require("../../utils/asyncHandler");
+const { formatDate } = require("../../services/servise");
 
 // Get events filtered by multiple categories (using category_name and handling special characters)
 const getEventsByFilter = asyncHandler(async (req, res) => {
@@ -59,16 +60,14 @@ const getEventsByFilter = asyncHandler(async (req, res) => {
         const result = {
           _id: event?._id,
           event_name: event?.event_name || "",
-          event_date: event?.event_date || "",
+          event_date: formatDate(event?.event_date) || "",
           event_category: event?.event_category?.category_name || "",
           event_type: event?.event_type || "",
           event_flag: event?.trainerid?.role || "",
           trainer_id: event?.trainerid?._id || "",
-          event_rating: averageRating || "",
+          event_rating: averageRating ? averageRating?.toFixed(1) : "",
           registered_users: event?.registered_users?.length || "",
-          event_thumbnail: event?.event_thumbnail
-            ? `${baseUrl}/${event?.event_thumbnail?.replace(/\\/g, "/")}`
-            : "",
+          event_thumbnail: event?.event_thumbnail || "",
         };
         return result;
       });
@@ -91,6 +90,70 @@ const getEventsByFilter = asyncHandler(async (req, res) => {
   }
 });
 
+// Controller to get events where registered_users includes req.user.id
+const getEventsByRegisteredUser = asyncHandler(async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const startIndex = (page - 1) * limit;
+  console.log(page, limit);
+  try {
+    // Fetch events where registered_users contains req.user.id
+    const events = await Event.find({ registered_users: req.user.id })
+      .populate("event_category", "category_name") // Populating event_category with category details
+      .populate("trainerid", "f_Name l_Name role") // Populating trainer details
+      .populate("registered_users", "f_Name l_Name") // Optional: Populating the registered users' names
+      .exec();
+
+    if (!events || events.length === 0) {
+      return res.status(404).json({
+        message: "No events found for the registered user.",
+      });
+    }
+
+    const eventsWithFullImageUrl = events
+      .slice(startIndex, startIndex + limit)
+      .map((event) => {
+        const reviews = event?.reviews;
+        const totalStars = reviews?.reduce(
+          (sum, review) => sum + review.star_count,
+          0
+        );
+        const averageRating = totalStars / reviews?.length;
+
+        const result = {
+          _id: event?._id,
+          event_name: event?.event_name || "",
+          event_date: formatDate(event?.event_date) || "",
+          event_category: event?.event_category?.category_name || "",
+          event_type: event?.event_type || "",
+          event_flag: event?.trainerid?.role || "",
+          trainer_id: event?.trainerid?._id || "",
+          event_rating: averageRating ? averageRating?.toFixed(1) : "",
+          registered_users: event?.registered_users?.length || "",
+          event_thumbnail: event?.event_thumbnail || "",
+        };
+        return result;
+      });
+
+    res.status(200).json(
+      new ApiResponse(200, "Events", eventsWithFullImageUrl, {
+        currentPage: page,
+        totalPages: Math.ceil(events.length / limit),
+        totalItems: events.length,
+        pageSize: limit,
+      })
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error: Could not fetch events",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = {
   getEventsByFilter,
+  getEventsByRegisteredUser,
 };

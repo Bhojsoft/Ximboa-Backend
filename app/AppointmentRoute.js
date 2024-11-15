@@ -2,12 +2,22 @@ const express = require("express");
 const router = express.Router();
 const Appointment = require("../model/Appointment/Appointment");
 const NotificationModel = require("../model/Notifications/Notification.model");
+const registration = require("../model/registration");
+const { formatDate } = require("../services/servise");
 
 // Create a new appointment
 router.post("/", async (req, res) => {
   try {
     const user_id = req.user.id; // Trainer ID
     const { t_id, date, time } = req.body;
+
+    const user = await registration
+      .findById(user_id)
+      .select("f_Name l_Name role");
+
+    const trainer = await registration
+      .findById(t_id)
+      .select("f_Name l_Name role");
 
     // Create a new appointment
     const newAppointment = new Appointment({ t_id, user_id, date, time });
@@ -16,7 +26,7 @@ router.post("/", async (req, res) => {
     // Send notification to the trainer
     const trainerNotification = new NotificationModel({
       recipient: t_id,
-      message: `You have a new appointment scheduled with user ID ${user_id} on ${date} at ${time}.`,
+      message: `You have a new appointment scheduled with ${user.f_Name} ${user.l_Name}  on ${date} at ${time}.`,
       activityType: "NEW_APPOINTMENT",
       relatedId: newAppointment._id,
     });
@@ -25,7 +35,7 @@ router.post("/", async (req, res) => {
     // Send notification to the user
     const userNotification = new NotificationModel({
       recipient: user_id,
-      message: `Your appointment with trainer ID ${t_id} has been confirmed for ${date} at ${time}.`,
+      message: `Your appointment with trainer ${trainer.f_Name} ${trainer.l_Name} has been confirmed for ${date} at ${time}.`,
       activityType: "NEW_APPOINTMENT",
       relatedId: newAppointment._id,
     });
@@ -41,9 +51,23 @@ router.post("/", async (req, res) => {
 // Get all appointments
 router.get("/", async (req, res) => {
   try {
-    const appointments = await Appointment.find();
-    // .populate("t_id", "name email") // Populate trainer details
-    // .populate("user_id", "name email"); // Populate user details
+    const result = await Appointment.find()
+      .populate("t_id", "f_Name l_Name email_id") // Populate trainer details
+      .populate("user_id", "f_Name l_Name email_id"); // Populate user details
+
+    const appointments = result.map((appointment) => {
+      return {
+        _id: appointment._id || "",
+        user_id: appointment?.user_id?._id || "",
+        user_name: appointment?.user_id?.f_Name
+          ? `${appointment?.user_id?.f_Name} ${appointment?.user_id?.l_Name}`
+          : "" || "",
+        date: formatDate(appointment?.date) || "",
+        time: appointment?.time || "",
+        createdAt: formatDate(appointment?.createdAt) || "",
+        updatedAt: formatDate(appointment?.updatedAt) || "",
+      };
+    });
     res.status(200).json(appointments);
   } catch (error) {
     res.status(500).json({ message: "Error fetching appointments", error });
@@ -53,9 +77,11 @@ router.get("/", async (req, res) => {
 // Get appointments by trainer ID
 router.get("/trainer", async (req, res) => {
   try {
-    const appointments = await Appointment.find({ t_id: req.user.id });
-    // .populate("t_id", "name email")
-    // .populate("user_id", "name email");
+    const appointments = await Appointment.find({ t_id: req.user.id })
+      .populate("t_id", "name email")
+      .populate("user_id", "name email");
+
+    console.log(appointments);
     res.status(200).json(appointments);
   } catch (error) {
     res

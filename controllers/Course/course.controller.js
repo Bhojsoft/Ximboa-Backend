@@ -108,7 +108,7 @@ const getCourseById = asyncHandler(async (req, res, next) => {
         "",
       trainer_image: courseData?.trainer_id?.trainer_image,
       trainer_id: courseData?.trainer_id?._id,
-      course_rating: averageRating || "",
+      course_rating: averageRating ? averageRating?.toFixed(1) : "",
       course_duration: Math.floor(
         Math.round(
           ((courseData?.end_date - courseData?.start_date) /
@@ -331,7 +331,7 @@ const getCoursesByFilter = asyncHandler(async (req, res) => {
             : `${course?.trainer_id?.f_Name || ""} ${
                 course?.trainer_id?.l_Name || ""
               }`.trim() || "",
-          course_rating: averageRating || "",
+          course_rating: averageRating ? averageRating?.toFixed(1) : "",
           course_duration:
             Math.floor(
               Math.round(

@@ -667,7 +667,7 @@ const approveRoleChange = asyncHandler(async (req, res) => {
 
       const notificationForApproval = new NotificationModel({
         recipient: user._id,
-        message: `Congratulations ${user.f_Name} ${user.l_Name}, your request to change your role to ${user.role} has been approved.`,
+        message: `Congratulations ${user.f_Name} ${user.l_Name}, your request to change your role ${user.role} to ${user.requestedRole} has been approved.`,
         activityType: "ROLE_CHANGE_APPROVED",
         relatedId: adminId,
       });
@@ -938,6 +938,39 @@ const addSkills = asyncHandler(async (req, res) => {
   }
 });
 
+const getUserById = asyncHandler(async (req, res) => {
+  const userid = req.params.userid;
+
+  Registration.findById(userid)
+    .select("-password -role -requested_Role -requests")
+    .then((trainer) => {
+      const result = {
+        _id: trainer?._id,
+        f_Name: trainer?.f_Name,
+        l_Name: trainer?.l_Name,
+        mobile_number: trainer?.mobile_number,
+        whatsapp_no: trainer?.whatsapp_no,
+        email_id: trainer?.email_id,
+        date_of_birth: trainer?.date_of_birth
+          ? formatDate(trainer?.date_of_birth)
+          : "",
+        rating_count: trainer?.rating_count,
+        address1: trainer?.address1,
+        address2: trainer?.address2,
+        city: trainer?.city,
+        country: trainer?.country,
+        state: trainer?.state,
+        pincode: trainer?.pincode,
+        trainer_image: trainer?.trainer_image || "",
+      };
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: err });
+    });
+});
+
 module.exports = {
   userRegistration,
   loginController,
@@ -951,4 +984,5 @@ module.exports = {
   getRejectedRequestByAdminId,
   getUserDashboard,
   addSkills,
+  getUserById,
 };

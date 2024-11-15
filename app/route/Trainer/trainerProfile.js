@@ -17,6 +17,7 @@ const registration = require("../../../model/registration");
 const InstituteDummyModel = require("../../../model/InstituteDummy/InstituteDummy.model");
 const { getRoleOrInstitute } = require("../../../utils/helper");
 const { defaultCourseImage } = require("../../../constants");
+const { formatDate } = require("../../../services/servise");
 
 router.get("/:id", async (req, res) => {
   try {
@@ -26,6 +27,11 @@ router.get("/:id", async (req, res) => {
 
     const trainerId = req.params.id;
     let trainer;
+
+    const stcount = await Review.aggregate([
+      { $match: { t_id: trainerId } },
+      { $group: { _id: "$t_id", averageRating: { $avg: "$star_count" } } },
+    ]);
 
     let trainers = await InstituteDummyModel.findById(trainerId).select(
       "-password -resetPasswordExpires -resetPasswordToken -requested_Role"
@@ -50,7 +56,7 @@ router.get("/:id", async (req, res) => {
         f_Name: "",
         l_Name: "",
         business_Name: trainers?.institute_name || "",
-        address1: trainers?.location !== "NA" ? trainers?.location : "" || "",
+        address1: trainers?.location !== "NA" ? trainers?.location : "",
         address2: "",
         mobile_number:
           trainers?.Whatsapp_number !== "NA"
@@ -60,6 +66,9 @@ router.get("/:id", async (req, res) => {
           trainers?.Whatsapp_number !== "NA"
             ? trainers?.Whatsapp_number
             : "" || "",
+        ratings: stcount[0]?.averageRating
+          ? stcount[0]?.averageRating?.toFixed(1)
+          : "0",
         About:
           trainers?.About[0]?.about_us !== "NA" ? trainers?.About : "" || "",
       };
@@ -89,7 +98,7 @@ router.get("/:id", async (req, res) => {
         _id: product?._id,
         product_image: product?.product_image || "",
         products_category: product?.categoryid?.category_name || "",
-        products_rating: averageRating || "",
+        products_rating: averageRating ? averageRating?.toFixed(1) : "",
         products_category: product?.categoryid?.category_name || "",
         products_name: product?.product_name || "",
         products_price: product?.product_prize || "",
@@ -119,11 +128,11 @@ router.get("/:id", async (req, res) => {
       return {
         _id: event?._id,
         event_name: event?.event_name || "",
-        event_date: event?.event_date || "",
+        event_date: formatDate(event?.event_date) || "",
         event_category: event?.event_category?.category_name || "",
         event_type: event?.event_type || "",
         trainer_id: event?.trainerid?._id || "",
-        event_rating: averageRating || "",
+        event_rating: averageRating ? averageRating?.toFixed(1) : "",
         registered_users: event?.registered_users.length || "",
         event_thumbnail: event?.event_thumbnail,
       };
@@ -145,11 +154,11 @@ router.get("/:id", async (req, res) => {
       return {
         _id: event?._id,
         event_name: event?.event_name || "",
-        event_date: event?.event_date || "",
+        event_date: formatDate(event?.event_date) || "",
         event_category: event?.event_category?.category_name || "",
         event_type: event?.event_type || "",
         trainer_id: event?.trainerid?._id || "",
-        event_rating: averageRating || "",
+        event_rating: averageRating ? averageRating?.toFixed(1) : "",
         registered_users: event?.registered_users.length || "",
         event_thumbnail: event?.event_thumbnail,
       };
@@ -242,7 +251,7 @@ router.get("/:id", async (req, res) => {
               course?.trainer_id?.l_Name || ""
             }`.trim() || "",
         trainer_image: course?.trainer_id?.trainer_image,
-        course_rating: averageRating || "",
+        course_rating: averageRating ? averageRating?.toFixed(1) : "",
         course_duration: Math.floor(
           Math.round(
             ((course?.end_date - course?.start_date) /
@@ -285,7 +294,7 @@ router.get("/:id", async (req, res) => {
               course?.trainer_id?.l_Name || ""
             }`.trim() || "",
         trainer_image: course?.trainer_id?.trainer_image,
-        course_rating: averageRating || "",
+        course_rating: averageRating ? averageRating?.toFixed(1) : "",
         course_duration: Math.floor(
           Math.round(
             ((course?.end_date - course?.start_date) /

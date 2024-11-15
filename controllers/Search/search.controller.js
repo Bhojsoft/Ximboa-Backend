@@ -8,6 +8,8 @@ const InstituteModel = require("../../model/Institute/Institute.model");
 const { getRoleOrInstitute } = require("../../utils/helper");
 const registration = require("../../model/registration");
 const InstituteDummyModel = require("../../model/InstituteDummy/InstituteDummy.model");
+const { formatDate } = require("../../services/servise");
+const Review = require("../../model/Review");
 
 const globalSearch = async (req, res) => {
   const searchTerm = req.query.q;
@@ -242,11 +244,9 @@ const searchProductByName = async (req, res) => {
 
       return {
         _id: product._id,
-        product_image: product.product_image
-          ? `${baseUrl}/${product.product_image.replace(/\\/g, "/")}`
-          : "",
+        product_image: product.product_image || "",
         products_category: product.categoryid?.category_name || "",
-        products_rating: averageRating || "No reviews",
+        products_rating: averageRating ? averageRating?.toFixed(1) : "",
         products_name: product.product_name || "",
         products_price: product.product_prize || "",
         products_selling_price: product.product_selling_prize || "",
@@ -383,16 +383,14 @@ const searchEventByName = async (req, res) => {
       const result = {
         _id: event?._id,
         event_name: event?.event_name || "",
-        event_date: event?.event_date || "",
+        event_date: formatDate(event?.event_date) || "",
         event_category: event?.event_category?.category_name || "",
         event_type: event?.event_type || "",
         event_flag: event?.trainerid?.role || "",
         trainer_id: event?.trainerid?._id || "",
-        event_rating: averageRating || "",
+        event_rating: averageRating ? averageRating?.toFixed(1) : "",
         registered_users: event?.registered_users.length || "",
-        event_thumbnail: event?.event_thumbnail
-          ? `${baseUrl}/${event?.event_thumbnail?.replace(/\\/g, "/")}`
-          : "",
+        event_thumbnail: event?.event_thumbnail || "",
       };
       return result;
     });
@@ -432,11 +430,22 @@ const searchTrainerByName = async (req, res) => {
     const trainers = await Registration.aggregate([
       { $match: searchQuery },
       {
+        $sort: { createdAt: -1 },
+      },
+      {
         $lookup: {
           from: "courses",
           localField: "_id",
           foreignField: "trainer_id",
           as: "courses",
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "categories",
+          foreignField: "_id",
+          as: "categories",
         },
       },
       {
@@ -447,11 +456,12 @@ const searchTrainerByName = async (req, res) => {
           trainer_image: 1,
           role: 1,
           course_count: { $size: "$courses" },
+          categories: 1,
         },
       },
-    ])
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit));
+      { $skip: (page - 1) * limit },
+      { $limit: limit },
+    ]).exec();
 
     const totalTrainers = await Registration.countDocuments(searchQuery);
 
@@ -460,21 +470,29 @@ const searchTrainerByName = async (req, res) => {
         const institute = await InstituteModel.findOne({
           trainers: trainer._id,
         }).select("institute_name social_Media");
+        const stcount = await Review.aggregate([
+          { $match: { t_id: trainer._id } },
+          { $group: { _id: "$t_id", averageRating: { $avg: "$star_count" } } },
+        ]);
 
         return {
           _id: trainer?._id,
           Business_Name: institute
-            ? institute?.institute_name
-            : trainer?.business_Name || trainer?.f_Name + " " + trainer?.l_Name,
-          f_Name: trainer?.f_Name,
-          l_Name: trainer?.l_Name,
-          role: trainer?.role,
-          course_count: trainer?.course_count,
-          social_Media: institute
-            ? institute?.social_Media
-            : trainer?.social_Media || "",
-          ratings: "",
-          trainer_image: trainer?.trainer_image,
+            ? institute.institute_name
+            : trainer.business_Name || `${trainer.f_Name} ${trainer.l_Name}`,
+          f_Name: trainer.f_Name,
+          l_Name: trainer.l_Name,
+          role: trainer.role,
+          flag: getRoleOrInstitute(trainer.role),
+          course_count: trainer.course_count,
+          categories: trainer?.categories?.map(
+            (category) => category.category_name
+          ),
+          social_Media: institute ? institute.social_Media : "",
+          ratings: stcount[0]?.averageRating
+            ? stcount[0]?.averageRating?.toFixed(1)
+            : "No ratings yet",
+          trainer_image: trainer.trainer_image,
         };
       })
     );

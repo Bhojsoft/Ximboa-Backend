@@ -173,12 +173,7 @@ router.get("/student", jwtAuthMiddleware, async (req, res) => {
           course_name: course?.course_name || "",
           online_offline: course?.online_offline || "",
           thumbnail_image: course?.thumbnail_image,
-          trainer_image: course?.trainer_id?.trainer_image
-            ? `${baseUrl}/${course?.trainer_id?.trainer_image.replace(
-                /\\/g,
-                "/"
-              )}`
-            : "",
+          trainer_image: course?.trainer_id?.trainer_image || "",
           trainer_id: course?.trainer_id?._id,
           business_Name: course?.trainer_id?.business_Name
             ? course?.trainer_id?.business_Name

@@ -12,8 +12,10 @@ const InstituteModel = require("../../model/Institute/Institute.model");
 const course = require("../../model/course");
 const {
   getEventsByFilter,
+  getEventsByRegisteredUser,
 } = require("../../controllers/Event/event.controller");
 const { uploadEventImage } = require("../../config/upload.config");
+const { formatDate } = require("../../services/servise");
 
 // Create a new event
 router.post(
@@ -90,7 +92,7 @@ router.get("/:id", jwtAuthMiddleware, async (req, res) => {
       event_thumbnail: events?.event_thumbnail || "",
       event_info: events?.event_info || "",
       event_description: events?.event_description || "",
-      event_date: events?.event_date || "",
+      event_date: formatDate(events?.event_date) || "",
       event_start_time: events?.event_start_time || "",
       event_end_time: events?.event_end_time || "",
       event_name: events?.event_name || "",
@@ -125,7 +127,7 @@ router.get("/trainer/bytrainer", jwtAuthMiddleware, async (req, res) => {
     const events = eventsData.map((event) => ({
       _id: event?._id,
       event_name: event?.event_name || "",
-      event_date: event?.event_date || "",
+      event_date: formatDate(event?.event_date) || "",
       event_category: event?.event_category?.category_name || "",
       event_type: event?.event_type || "",
       trainer_id: event?.trainerid?._id || "",
@@ -280,5 +282,10 @@ router.post("/registerevent", jwtAuthMiddleware, async (req, res) => {
 });
 
 router.get("/filter/event", getEventsByFilter);
+router.get(
+  "/get/my-registered-events",
+  jwtAuthMiddleware,
+  getEventsByRegisteredUser
+);
 
 module.exports = router;

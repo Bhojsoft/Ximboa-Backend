@@ -157,7 +157,7 @@ router.get("/trainer", async (req, res) => {
                 course?.trainer_id?.l_Name || ""
               }`.trim() || "",
           trainer_image: course?.trainer_id?.trainer_image,
-          course_rating: averageRating || "",
+          course_rating: averageRating ? averageRating?.toFixed(1) : "",
           tags: course?.tags || "",
           course_duration: Math.floor(
             Math.round(
